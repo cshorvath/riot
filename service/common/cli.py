@@ -1,16 +1,22 @@
-# noinspection PyUnresolvedReferences
-from typing import List
-
-from sqlalchemy.orm import sessionmaker
-
-from common.model import Base, engine
-from common.model.model import User, Device
-
-
 import logging
+
+from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import sessionmaker, scoped_session, Session
+
+from common.model.model import Base
+
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
+engine: Engine = create_engine('mysql+mysqldb://riot:riot@127.0.0.1/riot', convert_unicode=True)
+db_session: scoped_session = scoped_session(
+    sessionmaker(autocommit=False,
+                 autoflush=False,
+                 bind=engine)
+)
+
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 Session = sessionmaker(bind=engine)
@@ -32,7 +38,7 @@ session = Session()
 # user.devices.append(device)
 #
 # session.add_all([user, device])
-# session.commit()
-
-x: List[User] = session.query(User).all()
-d = x[0].devices[0]
+# # session.commit()
+#
+# x: List[User] = session.query(User).all()
+# d = x[0].devices[0]
