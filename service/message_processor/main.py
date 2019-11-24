@@ -11,10 +11,10 @@ def main():
     with get_db_session() as db_session:
         db_persister = DBPersister(db_session)
         data_observer = DataObserver(
-            db_persister=db_persister,
             topics=["riot/device/#"],
             mqtt_broker_host="localhost"
         )
+        data_observer.add_listener(db_persister)
         data_observer.start()
 
 

@@ -1,14 +1,14 @@
 import json
 import logging
 from abc import ABC, abstractmethod
-from datetime import datetime
 from json import JSONDecodeError
-from typing import Iterable
+from typing import Iterable, List
 
 import paho.mqtt.client as mqtt
 
 from common.model.model import MessageDirection
-from message_processor.db.db_persister import DBPersister
+from message_processor import util
+from message_processor.util import MessageListener
 
 
 class AMQTTObserver(ABC):
@@ -27,6 +27,8 @@ class AMQTTObserver(ABC):
         self._topics = topics
         self._qos = qos
         self._started = False
+
+        self._mqtt_client.enable_logger()
 
         self._mqtt_client.on_connect = lambda client, userdata, flags, rc: self._on_connect(rc)
         self._mqtt_client.on_disconnect = lambda client, userdata, rc: self._on_disconnect(rc)
@@ -65,7 +67,6 @@ class DataObserver(AMQTTObserver):
 
     def __init__(
             self,
-            db_persister: DBPersister,
             topics: Iterable[str],
             mqtt_broker_host: str,
             mqtt_broker_port: int = 1883,
@@ -80,11 +81,14 @@ class DataObserver(AMQTTObserver):
             mqtt_broker_port,
             qos
         )
-        self._db_persister = db_persister
         self._device_id_idx = device_id_idx
+        self._message_listeners: List[MessageListener] = []
+
+    def add_listener(self, message_listener: MessageListener):
+        self._message_listeners.append(message_listener)
 
     def _on_message(self, client, userdata, message):
-        device_id = self.parse_device_id(message.topic)
+        device_id = util.parse_device_id(message.topic)
         logging.info(f"Message arrived from device[{device_id}]")
         try:
             msg_dict = json.loads(message.payload)
@@ -94,23 +98,5 @@ class DataObserver(AMQTTObserver):
 
         timestamp: int = msg_dict.get("timestamp", 0)
         payload: dict = msg_dict.get("payload", None)
-        self._db_persister.store_message(
-            device_id,
-            MessageDirection.INBOUND,
-            datetime.fromtimestamp(timestamp / 1000),
-            json.dumps(payload)
-        )
-
-    def parse_device_id(self, topic_name: str):
-        """
-        Parses device id from topic name. Topic name expected to consist of parts separated with "/"
-        :param topic_name:
-        :return: device id
-        """
-        topic_splitted = topic_name.split("/")
-        if len(topic_splitted) >= self._device_id_idx + 1:
-            device_id_str = topic_splitted[self._device_id_idx]
-            if device_id_str.isdigit():
-                return int(device_id_str)
-        logging.error(f"Unable to parse device_id from topic name: {topic_name}")
-        return -1
+        for message_listener in self._message_listeners:
+            message_listener.on_message(device_id, timestamp, payload, MessageDirection.INBOUND)
