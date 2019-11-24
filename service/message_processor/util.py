@@ -18,6 +18,7 @@ class MessageListener(ABC):
 def parse_device_id(topic_name: str, device_id_idx: int = 2) -> int:
     """
     Parses device id from topic name. Topic name expected to consist of parts separated with "/"
+    :param device_id_idx: 
     :param topic_name:
     :return: device id
     """

@@ -99,4 +99,8 @@ class DataObserver(AMQTTObserver):
         timestamp: int = msg_dict.get("timestamp", 0)
         payload: dict = msg_dict.get("payload", None)
         for message_listener in self._message_listeners:
-            message_listener.on_message(device_id, timestamp, payload, MessageDirection.INBOUND)
+            try:
+                message_listener.on_message(device_id, timestamp, payload, MessageDirection.INBOUND)
+            except Exception as e:
+                logging.exception(e)
+                raise
