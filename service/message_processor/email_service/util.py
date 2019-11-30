@@ -1,5 +1,5 @@
-from message_processor.rule_engine.email_service import DummyEmailService, EmailService
-from message_processor.rule_engine.email_service.smtp import SMTPEmailService
+from message_processor.email_service import DummyEmailService, EmailService
+from message_processor.email_service.smtp import SMTPEmailService
 
 
 def email_service_factory(impl: str, config: dict) -> EmailService:

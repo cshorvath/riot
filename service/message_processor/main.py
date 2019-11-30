@@ -1,11 +1,11 @@
 import logging
 
-from common.util import parse_config_from_env
+from core.util import parse_config_from_env
 from message_processor.data_observer import DataObserver
 from message_processor.db.bootstrap import get_db_session, get_db_engine
 from message_processor.db.db_persister import DBPersister
-from message_processor.rule_engine.email_service import EmailService
-from message_processor.rule_engine.email_service.util import email_service_factory
+from message_processor.email_service import EmailService
+from message_processor.email_service.util import email_service_factory
 from message_processor.rule_engine.rule_engine import RuleEngine
 
 logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message)s", level=logging.INFO)

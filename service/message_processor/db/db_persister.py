@@ -5,7 +5,7 @@ from typing import List
 from sqlalchemy import exists
 from sqlalchemy.orm import Session
 
-from common.model.model import Message, MessageDirection, Device, Rule
+from core.model.model import Message, MessageDirection, Device, Rule
 from message_processor.util import MessageListener
 
 

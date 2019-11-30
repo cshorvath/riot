@@ -1,7 +1,8 @@
 import logging
 from abc import ABC, abstractmethod
+from datetime import datetime
 
-from common.model.model import MessageDirection
+from core.model.model import MessageDirection
 
 
 class MessageListener(ABC):
@@ -9,7 +10,7 @@ class MessageListener(ABC):
     @abstractmethod
     def on_message(self,
                    device_id: int,
-                   timestamp: int,
+                   timestamp: datetime,
                    payload: dict,
                    direction: MessageDirection = MessageDirection.INBOUND):
         pass
@@ -29,5 +30,3 @@ def parse_device_id(topic_name: str, device_id_idx: int = 2) -> int:
             return int(device_id_str)
     logging.error(f"Unable to parse device_id from topic name: {topic_name}")
     return -1
-
-

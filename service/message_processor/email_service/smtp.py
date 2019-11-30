@@ -5,8 +5,8 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 from typing import List, Type, Tuple
 
+from message_processor.email_service import EmailService
 from message_processor.rule_engine.action import ActionException
-from message_processor.rule_engine.email_service import EmailService
 
 
 class SMTPEmailService(EmailService):
@@ -27,7 +27,7 @@ class SMTPEmailService(EmailService):
         self._smtp_class: Type[smtplib.SMTP] = smtplib.SMTP_SSL if use_ssl else smtplib.SMTP_SSL
         self._mail_queue = asyncio.Queue()
 
-    def send_mail(self, recipients: List[Tuple[str, str]], subject: str, body: str):
+    def send_mail(self, recipients: List[str], subject: str, body: str):
         try:
             with self._smtp_class(
                     host=self._smtp_host,
@@ -41,9 +41,9 @@ class SMTPEmailService(EmailService):
         except smtplib.SMTPException as ex:
             raise ActionException(ex)
 
-    def _compose_msg(self, recipients: List[Tuple[str, str]], subject: str, body: str):
+    def _compose_msg(self, recipients: List[str], subject: str, body: str):
         msg = MIMEText(body)
         msg["From"] = formataddr(self._from)
-        msg["To"] = ",".join(formataddr(recipient) for recipient in recipients)
+        msg["To"] = ",".join(recipients)
         msg["Subject"] = subject
         return msg

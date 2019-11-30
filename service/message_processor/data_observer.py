@@ -1,12 +1,13 @@
 import json
 import logging
 from abc import ABC, abstractmethod
+from datetime import datetime, tzinfo
 from json import JSONDecodeError
 from typing import Iterable, List
 
 import paho.mqtt.client as mqtt
 
-from common.model.model import MessageDirection
+from core.model.model import MessageDirection
 from message_processor import util
 from message_processor.util import MessageListener
 
@@ -72,7 +73,8 @@ class DataObserver(AMQTTObserver):
             mqtt_broker_port: int = 1883,
             qos: int = 1,
             mqtt_client: mqtt.Client = None,
-            device_id_idx=2
+            device_id_idx=2,
+            tz: tzinfo =
     ) -> None:
         super(DataObserver, self).__init__(
             mqtt_client or mqtt.Client("riot_message_processor"),
@@ -97,11 +99,16 @@ class DataObserver(AMQTTObserver):
                 f"Error decoding message from topic [{message.topic}], payload: [{message.payload}], error[{e}]", )
             return
 
-        timestamp: int = msg_dict.get("timestamp", 0)
+        timestamp: int = msg_dict.get("timestamp", 0) / 1000
         payload: dict = msg_dict.get("payload", None)
         for message_listener in self._message_listeners:
             try:
-                message_listener.on_message(device_id, timestamp, payload, MessageDirection.INBOUND)
+                message_listener.on_message(
+                    device_id,
+                    datetime.fromtimestamp(timestamp, ),
+                    payload,
+                    MessageDirection.INBOUND
+                )
             except Exception as e:
                 logging.exception(e)
                 raise
