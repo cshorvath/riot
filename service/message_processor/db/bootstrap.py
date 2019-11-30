@@ -2,14 +2,15 @@ import logging
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
 
-engine: Engine = create_engine('mysql+mysqldb://riot:riot@127.0.0.1/riot', convert_unicode=True)
+
+def get_db_engine(host, user, password, db, port=3306):
+    return create_engine(f"mysql+mysqldb://{user}:{password}@{host}:{port}/{db}", convert_unicode=True)
 
 
 @contextmanager
-def get_db_session():
+def get_db_session(engine):
     session = sessionmaker(autocommit=False,
                            autoflush=False,
                            bind=engine)()

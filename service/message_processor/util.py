@@ -29,3 +29,5 @@ def parse_device_id(topic_name: str, device_id_idx: int = 2) -> int:
             return int(device_id_str)
     logging.error(f"Unable to parse device_id from topic name: {topic_name}")
     return -1
+
+
