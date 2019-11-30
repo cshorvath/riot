@@ -3,15 +3,17 @@ import logging
 from message_processor.data_observer import DataObserver
 from message_processor.db.bootstrap import get_db_session
 from message_processor.db.db_persister import DBPersister
+from message_processor.rule_engine.email_service import DummyEmailService
 from message_processor.rule_engine.rule_engine import RuleEngine
 
 logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 
 def main():
+    email_service = DummyEmailService()
     with get_db_session() as db_session:
         db_persister = DBPersister(db_session)
-        rule_engine = RuleEngine()
+        rule_engine = RuleEngine(db_persister, email_service)
         data_observer = DataObserver(
             topics=["riot/device/#"],
             mqtt_broker_host="localhost"

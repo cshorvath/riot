@@ -65,9 +65,10 @@ class RuleOperator(enum.Enum):
     EQ = 5
     NE = 6
     BETWEEN = 7
+    ANY = 8
 
 
-class RuleAction(enum.Enum):
+class ActionType(enum.Enum):
     SEND_EMAIL = 1
     FORWARD = 2
 
@@ -79,11 +80,11 @@ class Rule(Base):
     creator_id = Column(Integer, ForeignKey("user.id"), index=True, nullable=False)
     source_device_id = Column(Integer, ForeignKey("device.id"), index=True, nullable=False)
     name = Column(String(100), nullable=False)
-    field_selector = Column(Text, nullable=False)
-    operator = Column(Enum(RuleOperatorId), nullable=False)
+    message_field = Column(Text, nullable=False)
+    operator = Column(Enum(RuleOperator), nullable=False)
     operator_arg_1 = Column(Numeric, nullable=False)
     operator_arg_2 = Column(Numeric)
-    action = Column(Enum(RuleAction), nullable=False)
+    action_type = Column(Enum(ActionType), nullable=False)
     action_arg = Column(Text, nullable=False)
     target_device_id = Column(Integer, ForeignKey("device.id"))
 

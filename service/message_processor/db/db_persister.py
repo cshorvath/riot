@@ -1,10 +1,11 @@
 import logging
 from datetime import datetime
+from typing import List
 
 from sqlalchemy import exists
 from sqlalchemy.orm import Session
 
-from common.model.model import Message, MessageDirection, Device
+from common.model.model import Message, MessageDirection, Device, Rule
 from message_processor.util import MessageListener
 
 
@@ -28,7 +29,7 @@ class DBPersister(MessageListener):
     def create_dummy_device(device_id):
         return Device(id=device_id, name=f"Unnamed {device_id}")
 
-    def store_message(self, device_id: int, direction: MessageDirection, timestamp: int, payload: dict):
+    def store_message(self, device_id: int, direction: MessageDirection, timestamp: int, payload: dict) -> None:
         if not self._db_session.query(exists().where(Device.id == device_id)).scalar():
             logging.warning(f"Device[{device_id}] does not exists, will be created")
             self._db_session.add(DBPersister.create_dummy_device(device_id))
@@ -40,3 +41,6 @@ class DBPersister(MessageListener):
         )
         self._db_session.add(message)
         self._db_session.commit()
+
+    def get_rules_for_device(self, device_id: int) -> List[Rule]:
+        return self._db_session.query(Rule).filter_by(source_device_id=device_id).all()

@@ -93,7 +93,8 @@ class DataObserver(AMQTTObserver):
         try:
             msg_dict = json.loads(message.payload)
         except JSONDecodeError as e:
-            logging.error(f"Error decoding message from topic [{message.topic}], payload: [{message.payload}]")
+            logging.error(
+                f"Error decoding message from topic [{message.topic}], payload: [{message.payload}], error[{e}]", )
             return
 
         timestamp: int = msg_dict.get("timestamp", 0)
