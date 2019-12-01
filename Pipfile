@@ -10,6 +10,7 @@ pyyaml = "*"
 paho-mqtt = "*"
 sqlalchemy = "*"
 mysqlclient = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.8"

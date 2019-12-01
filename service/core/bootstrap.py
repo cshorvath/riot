@@ -16,10 +16,6 @@ def get_db_session(engine):
                            bind=engine)()
     try:
         yield session
-    except Exception as e:
-        logging.error(f"Database error: {e}")
-        session.rollback()
-        raise
     finally:
         session.close()
         logging.info("Database session closed")

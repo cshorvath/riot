@@ -1,25 +1,10 @@
 import logging
-from abc import ABC, abstractmethod
-from datetime import datetime
-
-from core.model.model import MessageDirection
-
-
-class MessageListener(ABC):
-
-    @abstractmethod
-    def on_message(self,
-                   device_id: int,
-                   timestamp: datetime,
-                   payload: dict,
-                   direction: MessageDirection = MessageDirection.INBOUND):
-        pass
 
 
 def parse_device_id(topic_name: str, device_id_idx: int = 2) -> int:
     """
     Parses device id from topic name. Topic name expected to consist of parts separated with "/"
-    :param device_id_idx: 
+    :param device_id_idx:
     :param topic_name:
     :return: device id
     """
