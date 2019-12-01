@@ -37,8 +37,10 @@ class MQTTClientWrapper:
         logging.info(f"{self} stop called")
         self._mqtt_client.disconnect()
 
-    def publish(self, topic, payload):
-        self._mqtt_client.publish(topic, payload, qos=self._qos)
+    def publish(self, topic, payload, qos=None):
+        if qos is None:
+            qos = self._qos
+        self._mqtt_client.publish(topic, payload, qos=qos)
 
     def _get_on_connect_cb(self, topics: Iterable[str], qos: int):
         def callback(client, userdata, flags, rc):
