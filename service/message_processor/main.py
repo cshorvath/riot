@@ -1,11 +1,11 @@
 import logging
-import pprint
+import sys
 
 import pytz
 
 from core.bootstrap import get_db_engine, get_db_session
 from core.model.model import ActionType
-from core.util import parse_config_from_env
+from core.util import parse_config_from_env, MissingConfigKeyException, ConfigNode
 from message_processor.db.db_persister import DBPersister
 from message_processor.mqtt.data_observer import DataObserver
 from message_processor.mqtt.mqtt_wrapper import MQTTClientWrapper
@@ -18,29 +18,29 @@ logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message
 
 
 def main():
-    config = parse_config_from_env("RIOT_DATA_PROCESSOR_CONFIG")
+    config: ConfigNode = parse_config_from_env("RIOT_DATA_PROCESSOR_CONFIG")
 
-    logging.info(f"Data processior is started, configuration:\n{pprint.pformat(config)}")
+    logging.info(f"Data processor is started, configuration:\n{config}")
 
     email_service: ActionHandler = email_service_factory(
-        config["email"]["implementation"],
-        config["email"].get("arguments", None)
+        config.email.implementation,
+        config.email.get("arguments", None)
     )
 
     db_engine = get_db_engine(
-        host=config["db"]["host"],
-        port=config["db"]["port"],
-        user=config["db"]["user"],
-        password=config["db"]["password"],
-        db=config["db"]["database"]
+        host=config.db.host,
+        port=config.db.port,
+        user=config.db.user,
+        password=config.db.password,
+        db=config.db.database
     )
 
     with get_db_session(db_engine) as db_session:
         mqtt_client = MQTTClientWrapper(
-            client_id=config["mqtt"]["client_id"],
-            mqtt_broker_host=config["mqtt"]["host"],
-            mqtt_broker_port=config["mqtt"]["port"],
-            topics=[get_input_topic_pattern(config["mqtt"]["topic_name_prefix"])],
+            client_id=config.mqtt.client_id,
+            mqtt_broker_host=config.mqtt.host,
+            mqtt_broker_port=config.mqtt.port,
+            topics=[get_input_topic_pattern(config.mqtt.topic_name_prefix)],
             qos=1
         )
         db_persister = DBPersister(db_session)
@@ -49,7 +49,7 @@ def main():
         rule_engine.register_action_handler(ActionType.SEND_EMAIL, email_service)
         rule_engine.register_action_handler(ActionType.FORWARD, email_service)
 
-        data_observer = DataObserver(tz=pytz.timezone(config["timezone"]))
+        data_observer = DataObserver(tz=pytz.timezone(config.timezone))
 
         data_observer.add_listener(db_persister)
         data_observer.add_listener(rule_engine)
@@ -61,8 +61,12 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    ex
+    except KeyboardInterrupt:
+        sys.exit(0)
+    except MissingConfigKeyException as e:
+        logging.error(e.message)
     except AssertionError as e:
         logging.error("Assertion failed: " + str(e))
-    except KeyboardInterrupt:
-        pass
+    except Exception as e:
+        logging.exception(e)
+    sys.exit(1)
