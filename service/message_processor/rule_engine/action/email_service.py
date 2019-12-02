@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 from typing import List, Type
 
-from core.model.model import Rule
+from core.model import Rule
 from message_processor.mqtt.data_observer import DeviceMessage
 from message_processor.rule_engine.action.action import ActionException, ActionHandler
 
@@ -60,7 +60,9 @@ class SMTPEmailService(EmailService):
             ) as smtp_client:
                 smtp_client.login(self._user, self._password)
                 smtp_client.send_message(
-                    msg=self._compose_msg(recipients, subject, body)
+                    msg=self._compose_msg(recipients, subject, body),
+                    from_addr=self._from[1],
+                    to_addrs=recipients
                 )
             logging.info(f"Message sent to [{recipients}], subject: {subject}")
         except smtplib.SMTPException as ex:

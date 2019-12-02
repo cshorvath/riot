@@ -4,17 +4,18 @@ import sys
 import pytz
 
 from core.bootstrap import get_db_engine, get_db_session
-from core.model.model import ActionType
+from core.model import ActionType
 from core.util import parse_config_from_env, MissingConfigKeyException, ConfigNode
 from message_processor.db.db_persister import DBPersister
 from message_processor.mqtt.data_observer import DataObserver
 from message_processor.mqtt.mqtt_wrapper import MQTTClientWrapper
 from message_processor.rule_engine.action.action import ActionHandler
 from message_processor.rule_engine.action.email_service import email_service_factory
+from message_processor.rule_engine.action.message_forwarder import MessageForwarder
 from message_processor.rule_engine.rule_engine import RuleEngine
-from message_processor.rule_engine.util import get_input_topic_pattern
+from message_processor.util import get_input_topic_pattern
 
-logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message)s", level=logging.DEBUG)
 
 
 def main():
@@ -36,25 +37,37 @@ def main():
     )
 
     with get_db_session(db_engine) as db_session:
+        topic_prefix = config.mqtt.topic_name_prefix
+        qos = config.mqtt.qos
+        timezone = pytz.timezone(config.timezone)
+
         mqtt_client = MQTTClientWrapper(
             client_id=config.mqtt.client_id,
             mqtt_broker_host=config.mqtt.host,
             mqtt_broker_port=config.mqtt.port,
-            topics=[get_input_topic_pattern(config.mqtt.topic_name_prefix)],
-            qos=1
+            topics=[get_input_topic_pattern(topic_prefix)],
+            qos=qos
         )
         db_persister = DBPersister(db_session)
+
+        message_forwarder: ActionHandler = MessageForwarder(
+            mqtt_wrapper=mqtt_client,
+            db_persister=db_persister,
+            prefix=topic_prefix,
+            qos=qos,
+            tz=timezone
+        )
+
         rule_engine = RuleEngine(db_persister)
-
         rule_engine.register_action_handler(ActionType.SEND_EMAIL, email_service)
-        rule_engine.register_action_handler(ActionType.FORWARD, email_service)
+        rule_engine.register_action_handler(ActionType.FORWARD, message_forwarder)
 
-        data_observer = DataObserver(tz=pytz.timezone(config.timezone))
+        data_observer = DataObserver(tz=timezone)
 
         data_observer.add_listener(db_persister)
         data_observer.add_listener(rule_engine)
 
-        mqtt_client.observer = data_observer
+        mqtt_client.add_subscriber(data_observer)
         mqtt_client.start()
 
 

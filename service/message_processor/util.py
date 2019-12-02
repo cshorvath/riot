@@ -1,4 +1,21 @@
 import logging
+from datetime import datetime, tzinfo
+
+
+def datetime_to_epochmillis(dt: datetime) -> int:
+    return int(dt.timestamp() * 1000)
+
+
+def epochmillis_to_datetime(millis: int, tz: tzinfo) -> datetime:
+    return datetime.fromtimestamp(millis / 1000, tz)
+
+
+def get_input_topic_pattern(prefix: str):
+    return f"{prefix}/device/+/outgoing"
+
+
+def get_output_topic(prefix: str, device_id: int):
+    return f"{prefix}/device/{device_id}/incoming"
 
 
 def parse_device_id(topic_name: str, device_id_idx: int = 2) -> int:

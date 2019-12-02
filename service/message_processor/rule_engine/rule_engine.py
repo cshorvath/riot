@@ -1,10 +1,10 @@
 import logging
 from typing import List, Dict, Union, Callable, Tuple, Optional
 
-from core.model.model import MessageDirection, Rule, ActionType, RuleOperator
+from core.model import RuleOperator, ActionType, Rule
 from message_processor.db.db_persister import DBPersister
 from message_processor.mqtt.data_observer import DeviceMessageListener, DeviceMessage
-from message_processor.rule_engine.action.action import ActionHandler
+from message_processor.rule_engine.action.action import ActionHandler, ActionException
 
 Num = Union[int, float]
 
@@ -49,8 +49,6 @@ class RuleEngine(DeviceMessageListener):
         self._action_handlers[action_type] = handler
 
     def on_device_message(self, message: DeviceMessage):
-        if message.direction != MessageDirection.INBOUND:
-            return
         rules: List[Rule] = self._db_persister.get_rules_for_device(message.device_id)
         for rule in rules:
             try:
@@ -73,3 +71,5 @@ class RuleEngine(DeviceMessageListener):
             except KeyError:
                 logging.error(f"Unable to find key {rule.message_field} in payload. Device[{message.device_id}],"
                               f" timestamp[{message.timestamp}] payload[{message.payload}]")
+            except ActionException as ex:
+                logging.exception(ex)

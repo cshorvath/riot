@@ -4,13 +4,12 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, tzinfo
 from json import JSONDecodeError
-from typing import List
+from typing import Set
 
 import pytz
 
-from core.model.model import MessageDirection
-from message_processor.mqtt import parse_device_id
-from message_processor.mqtt.mqtt_wrapper import MQTTObserver
+from message_processor.mqtt.mqtt_wrapper import MQTTSubscriber
+from message_processor.util import epochmillis_to_datetime, datetime_to_epochmillis, parse_device_id
 
 
 @dataclass
@@ -18,7 +17,11 @@ class DeviceMessage:
     device_id: int
     timestamp: datetime
     payload: dict
-    direction: MessageDirection
+
+    def to_json(self):
+        c = self.__dict__.copy()
+        c["timestamp"] = datetime_to_epochmillis(self.timestamp)
+        return c
 
 
 class DeviceMessageListener(ABC):
@@ -27,15 +30,15 @@ class DeviceMessageListener(ABC):
         pass
 
 
-class DataObserver(MQTTObserver):
+class DataObserver(MQTTSubscriber):
 
     def __init__(self, device_id_idx=2, tz: tzinfo = pytz.utc) -> None:
         self._device_id_idx = device_id_idx
-        self._message_listeners: List[DeviceMessageListener] = []
+        self._message_listeners: Set[DeviceMessageListener] = set()
         self._tz = tz
 
     def add_listener(self, message_listener: DeviceMessageListener):
-        self._message_listeners.append(message_listener)
+        self._message_listeners.add(message_listener)
 
     def on_message(self, topic, payload):
         device_id = parse_device_id(topic)
@@ -47,16 +50,16 @@ class DataObserver(MQTTObserver):
                 f"Error decoding message from topic [{topic}], payload: [{payload}], error[{e}]", )
             return
 
-        timestamp: int = msg_dict.get("timestamp", 0) / 1000
+        timestamp_millis: int = msg_dict.get("timestamp", 0)
         payload: dict = msg_dict.get("payload", None)
         for message_listener in self._message_listeners:
             try:
                 message_listener.on_device_message(
                     message=DeviceMessage(
                         device_id=device_id,
-                        timestamp=datetime.fromtimestamp(timestamp, tz=self._tz),
-                        payload=payload,
-                        direction=MessageDirection.INBOUND
+                        timestamp=epochmillis_to_datetime(timestamp_millis, self._tz)
+                        if timestamp_millis else datetime.now(tz=self._tz),
+                        payload=payload
                     ),
                 )
             except Exception as e:

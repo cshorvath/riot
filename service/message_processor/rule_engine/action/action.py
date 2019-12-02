@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from core.model.model import Rule, Device
+from core.model import Rule
 from message_processor.mqtt.data_observer import DeviceMessage
 
 
