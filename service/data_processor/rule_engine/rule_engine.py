@@ -1,20 +1,19 @@
 import logging
-from typing import List, Dict, Union, Callable, Tuple, Optional
+from numbers import Number
+from typing import List, Dict, Callable, Tuple, Optional
 
 from core.model import RuleOperator, ActionType, Rule
-from message_processor.db.db_persister import DBPersister
-from message_processor.mqtt.data_observer import DeviceMessageListener, DeviceMessage
-from message_processor.rule_engine.action.action import ActionHandler, ActionException
-
-Num = Union[int, float]
+from data_processor.db.db_persister import DBPersister
+from data_processor.mqtt.data_observer import DeviceMessageListener, DeviceMessage
+from data_processor.rule_engine.action.action import ActionHandler, ActionException
 
 
 class RuleCondition:
-    def __init__(self, message: str, predicate: Callable[[Num, Num, Num], bool]) -> None:
+    def __init__(self, message: str, predicate: Callable[[Number, Number, Number], bool]) -> None:
         self._message = message
         self._predicate = predicate
 
-    def eval(self, x: Num, arg1: Num, arg2: Num) -> Tuple[bool, Optional[str]]:
+    def eval(self, x: Number, arg1: Number, arg2: Number) -> Tuple[bool, Optional[str]]:
         result = self._predicate(x, arg1, arg2)
         return result, self._message.format(x=x, arg1=arg1, arg2=arg2) if result else None
 

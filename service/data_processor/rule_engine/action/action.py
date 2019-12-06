@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from core.model import Rule
-from message_processor.mqtt.data_observer import DeviceMessage
+from data_processor.mqtt.data_observer import DeviceMessage
 
 
 class ActionException(Exception):

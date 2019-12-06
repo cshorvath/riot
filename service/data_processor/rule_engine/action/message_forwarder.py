@@ -3,11 +3,11 @@ from datetime import datetime, tzinfo
 from typing import Callable
 
 from core.model import Rule, MessageDirection
-from message_processor.db.db_persister import DBPersister
-from message_processor.mqtt.data_observer import DeviceMessage
-from message_processor.mqtt.mqtt_wrapper import MQTTClientWrapper
-from message_processor.rule_engine.action.action import ActionHandler
-from message_processor.util import datetime_to_epochmillis, get_output_topic
+from data_processor.db.db_persister import DBPersister
+from data_processor.mqtt.data_observer import DeviceMessage
+from data_processor.mqtt.mqtt_wrapper import MQTTClientWrapper
+from data_processor.rule_engine.action.action import ActionHandler
+from data_processor.util import datetime_to_epochmillis, get_output_topic
 
 
 class MessageForwarder(ActionHandler):

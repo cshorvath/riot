@@ -5,7 +5,7 @@ from sqlalchemy import exists
 from sqlalchemy.orm import Session
 
 from core.model import Device, Message, Rule, MessageDirection
-from message_processor.mqtt.data_observer import DeviceMessageListener, DeviceMessage
+from data_processor.mqtt.data_observer import DeviceMessageListener, DeviceMessage
 
 
 class DBPersister(DeviceMessageListener):

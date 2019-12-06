@@ -8,8 +8,8 @@ from typing import Set
 
 import pytz
 
-from message_processor.mqtt.mqtt_wrapper import MQTTSubscriber
-from message_processor.util import epochmillis_to_datetime, datetime_to_epochmillis, parse_device_id
+from data_processor.mqtt.mqtt_wrapper import MQTTSubscriber
+from data_processor.util import epochmillis_to_datetime, datetime_to_epochmillis, parse_device_id
 
 
 @dataclass

@@ -6,14 +6,14 @@ import pytz
 from core.bootstrap import get_db_engine, get_db_session
 from core.model import ActionType
 from core.util import parse_config_from_env, MissingConfigKeyException, ConfigNode
-from message_processor.db.db_persister import DBPersister
-from message_processor.mqtt.data_observer import DataObserver
-from message_processor.mqtt.mqtt_wrapper import MQTTClientWrapper
-from message_processor.rule_engine.action.action import ActionHandler
-from message_processor.rule_engine.action.email_service import email_service_factory
-from message_processor.rule_engine.action.message_forwarder import MessageForwarder
-from message_processor.rule_engine.rule_engine import RuleEngine
-from message_processor.util import get_input_topic_pattern
+from data_processor.db.db_persister import DBPersister
+from data_processor.mqtt.data_observer import DataObserver
+from data_processor.mqtt.mqtt_wrapper import MQTTClientWrapper
+from data_processor.rule_engine.action.action import ActionHandler
+from data_processor.rule_engine.action.email_service import email_service_factory
+from data_processor.rule_engine.action.message_forwarder import MessageForwarder
+from data_processor.rule_engine.rule_engine import RuleEngine
+from data_processor.util import get_input_topic_pattern
 
 logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message)s", level=logging.DEBUG)
 

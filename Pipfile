@@ -11,8 +11,8 @@ paho-mqtt = "*"
 sqlalchemy = "*"
 mysqlclient = "*"
 pytz = "*"
-flask = "*"
-flask-restful = "*"
+fastapi = {extras = ["all"],version = "*"}
+uvicorn = "*"
 
 [requires]
 python_version = "3.8"

@@ -31,7 +31,6 @@ class Device(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(40), unique=True, index=True, nullable=False)
-    display_name = Column(String(40), nullable=True)
     description = Column(String(255))
 
     owners = relationship("User", secondary=user_device)

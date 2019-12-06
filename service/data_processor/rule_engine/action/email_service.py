@@ -7,8 +7,8 @@ from email.utils import formataddr
 from typing import List, Type
 
 from core.model import Rule
-from message_processor.mqtt.data_observer import DeviceMessage
-from message_processor.rule_engine.action.action import ActionException, ActionHandler
+from data_processor.mqtt.data_observer import DeviceMessage
+from data_processor.rule_engine.action.action import ActionException, ActionHandler
 
 
 class EmailService(ActionHandler, ABC):
