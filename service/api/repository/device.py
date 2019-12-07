@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 from sqlalchemy.orm import Session, Query, joinedload
 
@@ -7,7 +7,8 @@ from core.model import Device, User
 
 
 def _query_single_device(db: Session, device_id: int, user: User) -> Query:
-    query = db.query(Device).options(joinedload(Device.owners)).filter(Device.id == device_id)
+    query = db.query(Device).options(joinedload(Device.source_rules)) \
+        .filter(Device.id == device_id)
     if not user.admin:
         query.join(Device.owners) \
             .filter(User.id == user.id)
@@ -19,19 +20,22 @@ def create_device(db: Session, device: dto.Device, user: User):
     db.add(db_device)
     db.flush()
     user.devices.append(db_device)
+    db.refresh(db_device)
     db.commit()
     return db_device
 
 
-def get_devices_of_user(db: Session, user: User) -> List[Device]:
-    query = db.query(Device).options(joinedload(Device.owners))
+def get_devices_of_user(db: Session, user: User) -> List[Tuple[Device, int]]:
+    query = db.query(Device).options(joinedload(Device.source_rules))
     if not user.admin:
         query.join(Device.owners).filter(User.id == user.id)
-    return query.all()
+    devices = query.all()
+    return [(device, len(device.source_rules)) for device in devices]
 
 
-def get_device(db: Session, device_id: int, user: User) -> Optional[Device]:
-    return _query_single_device(db, device_id, user).one()
+def get_device(db: Session, device_id: int, user: User) -> Tuple[Device, int]:
+    device = _query_single_device(db, device_id, user).one()
+    return device, len(device.source_rules)
 
 
 def delete_device(db: Session, device_id: int, user: User):
@@ -40,7 +44,7 @@ def delete_device(db: Session, device_id: int, user: User):
     return result
 
 
-def update_device(db: Session, device_id: int, device: dto.Device, user: User) -> Optional[Device]:
+def update_device(db: Session, device_id: int, device: dto.Device, user: User) -> Optional[Tuple[Device, int]]:
     result = _query_single_device(db, device_id, user).update(device.dict())
     db.commit()
     if result:

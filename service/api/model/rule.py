@@ -21,21 +21,25 @@ class ForwardAction(CommonModel):
 class RuleResponse(CommonModel):
     id: int
     name: constr(strip_whitespace=True, min_length=2, max_length=25)
-    source_device: Device
+    target_device: Device
     creator: User
     message_field: str
     action_type: ActionType
-    action: Union[EmailAction, ForwardAction]
+    action_arg1: str
+    action_arg2: str
     operator: RuleOperator
     operator_arg1: Union[int, float]
     operator_arg2: Union[int, float]
 
 
 class NewRule(CommonModel):
+    id: int
     name: constr(strip_whitespace=True, min_length=2, max_length=25)
+    target_device_id: int
     message_field: str
     action_type: ActionType
-    action: Union[EmailAction, ForwardAction]
+    action_arg1: str
+    action_arg2: str
     operator: RuleOperator
     operator_arg1: Union[int, float]
     operator_arg2: Union[int, float]

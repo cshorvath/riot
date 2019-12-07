@@ -1,9 +1,6 @@
-from typing import List
-
 from pydantic.types import constr
 
 from api.model.common import CommonModel
-from api.model.user import User
 
 
 class Device(CommonModel):
@@ -13,4 +10,4 @@ class Device(CommonModel):
 
 class DeviceResponse(Device):
     id: int
-    owners: List[User]
+    rule_count: int

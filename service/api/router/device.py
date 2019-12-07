@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -8,7 +8,7 @@ import api.model.device as dto
 import api.repository.device as device_repository
 from api.bootstrap import get_db
 from api.util.auth import get_current_user
-from core.model import User, Device
+from core.model import User
 
 router = APIRouter()
 
@@ -16,7 +16,8 @@ router = APIRouter()
 @router.get("/", response_model=List[dto.DeviceResponse])
 def get_owned_devices(db: Session = Depends(get_db),
                       user: User = Depends(get_current_user)):
-    return device_repository.get_devices_of_user(db, user)
+    devices_with_rule_count = device_repository.get_devices_of_user(db, user)
+    return [dto.DeviceResponse(**d.__dict__, rule_count=r) for d, r in devices_with_rule_count]
 
 
 @router.post("/", response_model=dto.DeviceResponse)
@@ -30,10 +31,10 @@ def create_device(device: dto.Device,
 def get_device(device_id: int,
                user: User = Depends(get_current_user),
                db: Session = Depends(get_db)):
-    device: Optional[Device] = device_repository.get_device(db, device_id, user)
+    device, rule_count = device_repository.get_device(db, device_id, user)
     if not device:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
-    return device
+    return dto.DeviceResponse(**device.__dict__, rule_count=rule_count)
 
 
 @router.delete("/{device_id}")
