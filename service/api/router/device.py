@@ -16,7 +16,7 @@ router = APIRouter()
 @router.get("/", response_model=List[dto.DeviceResponse])
 def get_owned_devices(db: Session = Depends(get_db),
                       user: User = Depends(get_current_user)):
-    return device_repository.get_devices(db, user)
+    return device_repository.get_devices_of_user(db, user)
 
 
 @router.post("/", response_model=dto.DeviceResponse)

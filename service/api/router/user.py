@@ -9,11 +9,12 @@ import api.repository.user as user_repository
 from api.bootstrap import get_db
 from api.model.user import NewUser, User
 from api.util.auth import admin_user, get_current_user
+from api.util.exception import NotFoundException
 
 router = APIRouter()
 
 
-@router.get("/", dependencies=[Depends(admin_user)], response_model=List[User])
+@router.get("/", dependencies=[Depends(admin_user)], tags=["admin"], response_model=List[User])
 def get_all_users(db: Session = Depends(get_db)):
     return user_repository.get_all_users(db)
 
@@ -34,19 +35,30 @@ def get_current_user(user: User = Depends(get_current_user)):
     return user
 
 
-@router.delete("/{user_id}", dependencies=[Depends(admin_user)])
+@router.delete("/{user_id}", dependencies=[Depends(admin_user)], tags=["admin"])
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     result = user_repository.delete_user(db, user_id)
     if not result:
         raise HTTPException(HTTP_404_NOT_FOUND)
 
 
-@router.put("/{user_id}/device/{device_id}", dependencies=[Depends(admin_user)])
+@router.put("/{user_id}/device/{device_id}", dependencies=[Depends(admin_user)], tags=["admin"])
 def add_device_to_user(user_id: int, device_id: int, db: Session = Depends(get_db)):
     try:
         user_repository.add_device_to_user(db, user_id, device_id)
-    except IntegrityError:
+    except NotFoundException as e:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,
-            detail="User or device does not exists"
+            detail=e.message
+        )
+
+
+@router.delete("/{user_id}/device/{device_id}", dependencies=[Depends(admin_user)], tags=["admin"])
+def remove_device_from_user(user_id: int, device_id: int, db: Session = Depends(get_db)):
+    try:
+        user_repository.remove_device_from_user(db, user_id, device_id)
+    except NotFoundException as e:
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail=e.message
         )

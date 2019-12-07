@@ -1,12 +1,12 @@
-from numbers import Number
 from typing import Union
 
 from pydantic.networks import EmailStr
+from pydantic.types import constr
 
 from api.model.common import CommonModel
 from api.model.device import Device
 from api.model.user import User
-from core.model import RuleOperator
+from core.model import RuleOperator, ActionType
 
 
 class EmailAction(CommonModel):
@@ -14,20 +14,28 @@ class EmailAction(CommonModel):
 
 
 class ForwardAction(CommonModel):
-    target_device_id: int
+    target_device: Device
     message: dict
 
 
-class Rule(CommonModel):
+class RuleResponse(CommonModel):
+    id: int
+    name: constr(strip_whitespace=True, min_length=2, max_length=25)
     source_device: Device
-    target_device: Device
     creator: User
     message_field: str
+    action_type: ActionType
     action: Union[EmailAction, ForwardAction]
     operator: RuleOperator
-    operator_arg1: Number
-    operator_arg2: Number
+    operator_arg1: Union[int, float]
+    operator_arg2: Union[int, float]
 
 
-class RuleResponse(Rule):
-    id: int
+class NewRule(CommonModel):
+    name: constr(strip_whitespace=True, min_length=2, max_length=25)
+    message_field: str
+    action_type: ActionType
+    action: Union[EmailAction, ForwardAction]
+    operator: RuleOperator
+    operator_arg1: Union[int, float]
+    operator_arg2: Union[int, float]

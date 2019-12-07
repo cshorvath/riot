@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
@@ -6,6 +6,7 @@ from sqlalchemy.orm.exc import NoResultFound
 import core.model as db_model
 from api.model.user import NewUser
 from api.util.auth import get_password_hash
+from api.util.exception import NotFoundException
 
 
 def get_all_users(db: Session):
@@ -43,7 +44,25 @@ def delete_user(db: Session, user_id: int) -> bool:
     return delete_count
 
 
-def add_device_to_user(db: Session, user_id: int, device_id: int) -> bool:
-    device = db_model.UserDevice(user_id=user_id, device_id=device_id)
-    db.add(device)
+def _get_user_and_device(db: Session, user_id: int, device_id: int) -> Tuple[db_model.User, db_model.Device]:
+    user: db_model.User = db.query(db_model.User).get(user_id)
+    if not user:
+        raise NotFoundException("user")
+    device: db_model.Device = db.query(db_model.Device).get(device_id)
+    if not device:
+        raise NotFoundException("device")
+    return user, device
+
+
+def add_device_to_user(db: Session, user_id: int, device_id: int):
+    user, device = _get_user_and_device(db, user_id, device_id)
+    user.devices.append(device)
     db.commit()
+    return user
+
+
+def remove_device_from_user(db: Session, user_id: int, device_id: int):
+    user, device = _get_user_and_device(db, user_id, device_id)
+    user.devices.remove(device)
+    db.commit()
+    return user
