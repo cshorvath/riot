@@ -3,9 +3,9 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from api.bootstrap import config
-from api.router import user, device
+from api.router import user, device, auth
 
-app = FastAPI()
+app = FastAPI(title="RIOT api")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,6 +23,13 @@ app.include_router(
     device.router,
     prefix="/device",
     tags=["device"],
+)
+
+app.include_router(
+    auth.router,
+    prefix="/token",
+    tags=["auth"],
+
 )
 if __name__ == "__main__":
     uvicorn.run(app, host=config.server.host, port=config.server.port)
