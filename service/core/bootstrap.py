@@ -11,10 +11,11 @@ def get_db_engine(host, user, password, db, port=3306):
 
 @contextmanager
 def get_db_session(engine):
-    session = sessionmaker(autocommit=False,
+    Session = sessionmaker(autocommit=False,
                            autoflush=False,
-                           bind=engine)()
+                           bind=engine)
     try:
+        session = Session()
         yield session
     finally:
         session.close()

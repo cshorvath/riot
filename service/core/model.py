@@ -1,17 +1,20 @@
 import enum
 
-from sqlalchemy import Column, Enum, Integer, String, Table, Boolean, ForeignKey, TIMESTAMP, JSON, Text, Numeric
+from sqlalchemy import Column, Enum, Integer, String, Boolean, ForeignKey, TIMESTAMP, JSON, Text, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
-user_device = Table(
-    "user_device",
-    Base.metadata,
-    Column('user_id', Integer, ForeignKey('user.id'), nullable=False),
-    Column('device_id', Integer, ForeignKey('device.id'), nullable=False)
-)
+
+class UserDevice(Base):
+    __tablename__ = "user_device"
+
+    user_id = Column(Integer, ForeignKey('user.id', ondelete="CASCADE"), nullable=False, primary_key=True, )
+    device_id = Column(Integer, ForeignKey('device.id', ondelete="CASCADE"), nullable=False, primary_key=True)
+
+    user = relationship("User", back_populates="devices")
+    device = relationship("Device", back_populates="owners")
 
 
 class User(Base):
@@ -19,10 +22,10 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(40), unique=True)
-    password = Column(String(40))
+    password = Column(String(255))
     admin = Column(Boolean, default=False, nullable=False)
 
-    devices = relationship("Device", secondary=user_device)
+    devices = relationship(UserDevice, back_populates="user")
     rules = relationship("Rule", back_populates="creator")
 
 
@@ -30,10 +33,10 @@ class Device(Base):
     __tablename__ = "device"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(40), unique=True, index=True, nullable=False)
+    name = Column(String(40), index=True, nullable=False)
     description = Column(String(255))
 
-    owners = relationship("User", secondary=user_device)
+    owners = relationship(UserDevice, back_populates="device")
     messages = relationship("Message", back_populates="device")
     source_rules = relationship("Rule", back_populates="source_device", foreign_keys="Rule.source_device_id")
     target_rules = relationship("Rule", back_populates="target_device", foreign_keys="Rule.target_device_id")

@@ -4,7 +4,7 @@ from api.model.common import CommonModel
 class User(CommonModel):
     id: int
     name: str
-    is_admin: bool
+    admin: bool
 
 
 class NewUser(CommonModel):

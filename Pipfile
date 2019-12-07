@@ -13,6 +13,9 @@ mysqlclient = "*"
 pytz = "*"
 fastapi = {extras = ["all"],version = "*"}
 uvicorn = "*"
+python-multipart = "*"
+passlib = {extras = ["bcrypt"],version = "*"}
+pyjwt = "*"
 
 [requires]
 python_version = "3.8"
