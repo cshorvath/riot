@@ -1,51 +1,60 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from starlette.status import HTTP_404_NOT_FOUND
 
+import api.repository.rule as rule_repository
 from api.bootstrap import get_db
-from api.model.rule import NewRule, RuleResponse
-from api.router.user import get_current_user
+from api.model.rule import NewRule, RuleResponse, PatchRule
+from api.util.auth import owner_user
 from core.model import User
 
 router = APIRouter()
 
 
-@router.get("{device_id}/rule", response_model=List[RuleResponse])
+@router.get("/{device_id}/rule", dependencies=[Depends(owner_user)], response_model=List[RuleResponse])
 def get_rules_for_device(
         device_id: int,
-        user: User = Depends(get_current_user),
         db: Session = Depends(get_db)
 ):
-    pass
+    return rule_repository.get_rules_for_device(db, device_id)
 
 
-@router.post("{device_id}/rule")
+@router.post("/{device_id}/rule")
 def add_rule_for_device(
         device_id: int,
         rule: NewRule,
-        user: User = Depends(get_current_user),
+        user: User = Depends(owner_user),
         db: Session = Depends(get_db)
 ):
-    pass
+    return rule_repository.insert_rule(db, device_id, rule, user)
 
 
-@router.patch("{device_id}/rule/{rule_id}", response_model=RuleResponse)
+@router.patch("/{device_id}/rule/{rule_id}", dependencies=[Depends(owner_user)], response_model=RuleResponse)
 def update_rule(
-        device_id: int,
         rule_id: int,
-        rule: NewRule,
-        user: User = Depends(get_current_user),
+        rule: PatchRule,
         db: Session = Depends(get_db)
 ):
-    pass
+    rule = rule_repository.patch_rule(db, rule_id, rule)
+    if not rule:
+        return rule
+    raise HTTPException(
+        status_code=HTTP_404_NOT_FOUND,
+        detail="Rule not found."
+    )
 
 
-@router.delete("{device_id}/rule/{rule_id}")
+@router.delete("/{device_id}/rule/{rule_id}", dependencies=[Depends(owner_user)])
 def delete_rule(
-        device_id: int,
         rule_id: int,
-        user: User = Depends(get_current_user),
         db: Session = Depends(get_db)
 ):
-    pass
+    rule = rule_repository.delete_rule(db, rule_id)
+    if not rule:
+        return rule
+    raise HTTPException(
+        status_code=HTTP_404_NOT_FOUND,
+        detail="Rule not found."
+    )

@@ -54,6 +54,7 @@ def _get_user_and_device(db: Session, user_id: int, device_id: int) -> Tuple[db_
     return user, device
 
 
+# TODO too much query
 def add_device_to_user(db: Session, user_id: int, device_id: int):
     user, device = _get_user_and_device(db, user_id, device_id)
     user.devices.append(device)

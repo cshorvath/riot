@@ -5,10 +5,11 @@ from jwt import PyJWTError
 from passlib.context import CryptContext
 from pydantic import ValidationError
 from requests import Session
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
+from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 
 import api.repository.user as user_repository
 from api.bootstrap import get_db, SECRET_KEY, ALGORITHM
+from api.repository.device import user_owns_device
 from core.model import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -56,3 +57,16 @@ def admin_user(
             status_code=HTTP_403_FORBIDDEN,
             detail="Admin required"
         )
+
+
+def owner_user(
+        device_id: int,
+        user: User = Depends(get_current_user),
+        db: Session = Depends(get_db)
+):
+    if not (user.admin or user_owns_device(db, user.id, device_id)):
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail="Device not found."
+        )
+    return user

@@ -7,7 +7,7 @@ from starlette.status import HTTP_404_NOT_FOUND
 import api.model.device as dto
 import api.repository.device as device_repository
 from api.bootstrap import get_db
-from api.util.auth import get_current_user
+from api.util.auth import get_current_user, owner_user
 from core.model import User
 
 router = APIRouter()
@@ -49,10 +49,10 @@ def delete_device(device_id: int,
 @router.patch("/{device_id}")
 def update_device(
         device_id: int,
-        device: dto.Device,
-        user: User = Depends(get_current_user),
+        device: dto.PatchDevice,
+        user: User = Depends(owner_user),
         db: Session = Depends(get_db)):
-    result = device_repository.update_device(db, device_id, device, user)
+    result, rule_count = device_repository.update_device(db, device_id, device, user)
     if not result:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
-    return result
+    return dto.DeviceResponse(**result.__dict__, rule_count=rule_count)
