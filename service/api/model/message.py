@@ -10,8 +10,3 @@ class Message(CommonModel):
     timestamp: datetime
     payload: dict
     direction: MessageDirection
-
-
-class OutgoingMessage(CommonModel):
-    device_id: int
-    payload: dict

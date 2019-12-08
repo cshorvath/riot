@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from api.bootstrap import config
-from api.router import user, device, auth, rule
+from api.router import user, device, auth, rule, message
 
 logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message)s", level=logging.DEBUG)
 
@@ -40,6 +40,12 @@ app.include_router(
     rule.router,
     prefix="/device",
     tags=["rule"]
+)
+
+app.include_router(
+    message.router,
+    prefix="/device",
+    tags=["message"]
 )
 
 if __name__ == "__main__":
