@@ -30,16 +30,25 @@ class APIClient {
 
     async loginAndGetUser(user, password) {
         await this.login(user, password);
-        return await this.getCurrentUser();
+        return this.getCurrentUser();
     }
 
     async getDevices() {
-        return (await this.callAPI("GET", "/device")).data
+        return (await this.callAPI("GET", "/device/")).data
+    }
+
+
+    async addDevice(device) {
+        return this.callAPI("POST", "/device/", null, device);
+    }
+
+    async deleteDevice(deviceId) {
+        return this.callAPI("DELETE", "/device/" + deviceId)
     }
 
     async callAPI(method, url, params = null, body = null) {
         try {
-            return await axios.request({
+            const response = await axios.request({
                 url: this._baseUrl + url,
                 method,
                 params,
@@ -47,9 +56,10 @@ class APIClient {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("token")
                 }
-            })
+            });
+            console.log(response);
+            return response;
         } catch (e) {
-            window.x = e;
             if (!e.response) {
                 throw new APIError("Network error")
             }

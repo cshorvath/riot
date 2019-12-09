@@ -39,20 +39,18 @@ def get_device(device_id: int,
                               rule_count=rule_count)
 
 
-@router.delete("/{device_id}")
+@router.delete("/{device_id}", dependencies=[Depends(owner_user())])
 def delete_device(device_id: int,
-                  user: User = Depends(get_current_user),
                   db: Session = Depends(get_db)):
     result = device_repository.delete_device(db, device_id)
     if not result:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
 
 
-@router.patch("/{device_id}")
+@router.patch("/{device_id}", dependencies=[Depends(owner_user)])
 def update_device(
         device_id: int,
         device: dto.PatchDevice,
-        user: User = Depends(owner_user),
         db: Session = Depends(get_db)):
     db_device, rule_count = device_repository.update_device(db, device_id, device)
     if not db_device:
