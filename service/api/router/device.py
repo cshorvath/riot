@@ -17,31 +17,33 @@ router = APIRouter()
 def get_owned_devices(db: Session = Depends(get_db),
                       user: User = Depends(get_current_user)):
     devices_with_rule_count = device_repository.get_devices_of_user(db, user)
-    return [dto.DeviceResponse(**d.__dict__, rule_count=r) for d, r in devices_with_rule_count]
+    return [dto.DeviceResponse(id=d.id, name=d.name, description=d.description, rule_count=r) for d, r in
+            devices_with_rule_count]
 
 
 @router.post("/", response_model=dto.DeviceResponse)
 def create_device(device: dto.Device,
                   user: User = Depends(get_current_user),
                   db: Session = Depends(get_db)):
-    return device_repository.create_device(db, device, user)
+    db_device = device_repository.create_device(db, device, user)
+    return dto.DeviceResponse(id=db_device.id, name=db_device.name, description=db_device.description, rule_count=0)
 
 
 @router.get("/{device_id}", response_model=dto.DeviceResponse)
 def get_device(device_id: int,
-               user: User = Depends(get_current_user),
                db: Session = Depends(get_db)):
-    device, rule_count = device_repository.get_device(db, device_id, user)
-    if not device:
+    db_device, rule_count = device_repository.get_device(db, device_id)
+    if not db_device:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
-    return dto.DeviceResponse(**device.__dict__, rule_count=rule_count)
+    return dto.DeviceResponse(id=db_device.id, name=db_device.name, description=db_device.description,
+                              rule_count=rule_count)
 
 
 @router.delete("/{device_id}")
 def delete_device(device_id: int,
                   user: User = Depends(get_current_user),
                   db: Session = Depends(get_db)):
-    result = device_repository.delete_device(db, device_id, user)
+    result = device_repository.delete_device(db, device_id)
     if not result:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
 
@@ -52,7 +54,8 @@ def update_device(
         device: dto.PatchDevice,
         user: User = Depends(owner_user),
         db: Session = Depends(get_db)):
-    result, rule_count = device_repository.update_device(db, device_id, device, user)
-    if not result:
+    db_device, rule_count = device_repository.update_device(db, device_id, device)
+    if not db_device:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
-    return dto.DeviceResponse(**result.__dict__, rule_count=rule_count)
+    return dto.DeviceResponse(id=db_device.id, name=db_device.name, description=db_device.description,
+                              rule_count=rule_count)

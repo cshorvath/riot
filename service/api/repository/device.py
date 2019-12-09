@@ -34,20 +34,22 @@ def get_devices_of_user(db: Session, user: User) -> List[Tuple[Device, int]]:
     return [(device, len(device.source_rules)) for device in devices]
 
 
-def get_device(db: Session, device_id: int, user: User) -> Tuple[Device, int]:
+def get_device(db: Session, device_id: int) -> Tuple[Device, int]:
     device = _query_single_device(db, device_id).one()
-    return device, len(device.source_rules)
+    rule_count = len(device.source_rules) if device else None
+    return device, rule_count
 
 
-def delete_device(db: Session, device_id: int, user: User):
+def delete_device(db: Session, device_id: int):
     result = _query_single_device(db, device_id).delete()
     db.commit()
     return result
 
 
-def update_device(db: Session, device_id: int, device: dto.PatchDevice, user: User) -> Optional[Tuple[Device, int]]:
+def update_device(db: Session, device_id: int, device: dto.PatchDevice) -> Optional[
+    Tuple[Optional[Device], Optional[int]]]:
     result = _query_single_device(db, device_id).update(device.dict(exclude_unset=True))
     db.commit()
     if result:
-        return get_device(db, device_id, user)
-    return None
+        return get_device(db, device_id)
+    return None, None
