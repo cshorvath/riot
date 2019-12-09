@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import random
 from sys import argv
 from time import sleep
 
@@ -24,10 +25,11 @@ client.connect(mqtt_broker, 1883, 60)
 c = 0
 
 client.on_publish = lambda client, userdata, mid: print(mid)
-while c < limit:
+while True:
     msg_info = client.publish(
         topic=topic,
-        payload=json.dumps({"timestamp": datetime.datetime.now().timestamp() * 1000, "payload": {"boo": c}}),
+        payload=json.dumps({"timestamp": datetime.datetime.now().timestamp() * 1000,
+                            "payload": {"temperature": random.randint(20, 40), "humidity": random.randint(50, 100)}}),
         qos=2
     )
     c += 1

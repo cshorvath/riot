@@ -11,3 +11,7 @@ body {
 .header-brand {
     color: beige;
 }
+
+table.message-table {
+    text-align: center;
+}

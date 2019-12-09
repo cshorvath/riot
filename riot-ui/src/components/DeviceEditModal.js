@@ -6,10 +6,10 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {InProgressSpinner} from "./util";
 import {connect} from "react-redux";
-import {addDevice, updateDevice} from "../actions/devices";
+import {addDevice, hideDeviceModal, updateDevice} from "../actions/devices";
 
 
-function DeviceEditModal({show, device, inProgress, addDevice, updateDevice}) {
+function DeviceEditModal({show, device, inProgress, addDevice, updateDevice, hideDeviceModal}) {
 
     const name = device ? device.name : null;
     const description = device ? device.description : null;
@@ -24,13 +24,13 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice}) {
         event.preventDefault();
         const data = new FormData(event.target);
         const device = {name: data.get("name"), description: data.get("description")};
-        onSubmit(device)
+        if (device.name.trim())
+            onSubmit(device)
     }
 
     return <Modal
         show={show}
-        onHide={() => {
-        }}
+        onHide={hideDeviceModal}
         size="lg"
         centered>
         <Modal.Header closeButton>
@@ -45,7 +45,7 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice}) {
                         Név
                     </Form.Label>
                     <Col md="9">
-                        <Form.Control name="name" type="text" value={name}/>
+                        <Form.Control name="name" type="text" defaultValue={name}/>
                     </Col>
                 </Form.Group>
 
@@ -54,7 +54,7 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice}) {
                         Megjegyzés
                     </Form.Label>
                     <Col md="9">
-                        <Form.Control name="description" type="text" value={description}/>
+                        <Form.Control name="description" type="text" defaultValue={description}/>
                     </Col>
                 </Form.Group>
             </Modal.Body>
@@ -65,4 +65,4 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice}) {
     </Modal>
 }
 
-export default connect(state => state.devices.modal, {addDevice, updateDevice})(DeviceEditModal)
+export default connect(state => state.devices.modal, {addDevice, updateDevice, hideDeviceModal})(DeviceEditModal)

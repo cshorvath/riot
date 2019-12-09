@@ -38,12 +38,24 @@ class APIClient {
     }
 
 
+    async getDevice(deviceId) {
+        return (await this.callAPI("GET", "/device/" + deviceId)).data
+    }
+
     async addDevice(device) {
         return this.callAPI("POST", "/device/", null, device);
     }
 
+    async updateDevice(deviceId, deviceData) {
+        return this.callAPI("PATCH", "/device/" + deviceId, null, deviceData);
+    }
+
     async deleteDevice(deviceId) {
         return this.callAPI("DELETE", "/device/" + deviceId)
+    }
+
+    async getMessages(deviceId, page) {
+        return (await this.callAPI("GET", `/device/${deviceId}/message`, {page})).data;
     }
 
     async callAPI(method, url, params = null, body = null) {

@@ -39,7 +39,7 @@ def get_device(device_id: int,
                               rule_count=rule_count)
 
 
-@router.delete("/{device_id}", dependencies=[Depends(owner_user())])
+@router.delete("/{device_id}", dependencies=[Depends(owner_user)])
 def delete_device(device_id: int,
                   db: Session = Depends(get_db)):
     result = device_repository.delete_device(db, device_id)

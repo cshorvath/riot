@@ -6,6 +6,7 @@ import Devices from "./Devices";
 import Login from "./Login";
 import {Redirect} from "react-router";
 import {connect} from "react-redux";
+import Messages from "./Messages";
 
 
 
@@ -17,10 +18,11 @@ const App = function ({loggedIn}) {
 
     return <BrowserRouter>
         <Header/>
-        <Container className="mt-3">
+        <Container className="mt-3" fluid>
             <Switch>
                 <Route exact path="/"><Redirect to="/device"/></Route>
-                <Route path="/device" component={authReq(Devices)}/>
+                <Route exact path="/device" component={authReq(Devices)}/>
+                <Route exact path="/device/:deviceId/message" component={authReq(Messages)}/>
             </Switch>
         </Container>
     </BrowserRouter>

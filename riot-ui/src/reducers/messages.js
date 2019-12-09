@@ -1,3 +1,14 @@
+import {MESSAGES_ERROR, MESSAGES_LOADED, MESSAGES_LOADING} from "../actions/messages";
+
 export default function (state = {}, action) {
-return state;
+    switch (action.type) {
+        case MESSAGES_LOADING:
+            return {...state, isLoading: true, error: null};
+        case    MESSAGES_LOADED:
+            return {device: action.device, isLoading: false, error: null, ...action.data};
+        case    MESSAGES_ERROR:
+            return {...state, isLoading: false, error: action.error};
+        default:
+            return state;
+    }
 }

@@ -1,22 +1,29 @@
+import math
 from datetime import datetime
-from typing import List
 
 from fastapi import APIRouter, Depends
+from pydantic.types import conint
 from sqlalchemy.orm import Session
 
 import api.repository.message as message_repository
 from api.bootstrap import get_db
-from api.model.message import Message
+from api.model.message import Message, MessageResponse
 from api.util.auth import owner_user
 
 router = APIRouter()
 
 
-@router.get("/{device_id}/message", dependencies=[Depends(owner_user)], response_model=List[Message])
+@router.get("/{device_id}/message", dependencies=[Depends(owner_user)], response_model=MessageResponse)
 def get_messages(
         device_id: int,
         begin: datetime = None,
         end: datetime = None,
-        page: int = 0,
+        page: conint(ge=1) = 1,
         db: Session = Depends(get_db)):
-    return message_repository.get_messages(db, device_id, begin, end, page)
+    messages, record_count = message_repository.get_messages(db, device_id, begin, end, page)
+    page_count = math.ceil(record_count / message_repository.MAX_MESSAGE_PER_PAGE)
+    return MessageResponse(
+        page=page,
+        page_count=page_count,
+        record_count=record_count,
+        items=[Message.from_orm(msg) for msg in messages])

@@ -1,13 +1,21 @@
 import React, {useEffect} from "react";
 import Table from "react-bootstrap/Table";
-import {addDevice, deleteDevice, getDevices, showAddDeviceModal} from "../actions/devices";
+import {addDevice, deleteDevice, getDevices, showAddDeviceModal, showEditDeviceModal} from "../actions/devices";
 import {ErrorAlert, InProgressSpinner} from "./util";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import {connect} from "react-redux";
 import DeviceEditModal from "./DeviceEditModal";
+import {Link} from "react-router-dom";
 
-function DeviceRow({device, deleteDevice}) {
+function DeviceRow({device, deleteDevice, showEditDeviceModal}) {
+
+    function confirmDelete() {
+        if (window.confirm(`Biztosan törölni akarod a következő eszközt: ${device.name}? `))
+            deleteDevice(device.id)
+    }
+
+
     return <tr>
         <td>{device.id}</td>
         <td>{device.name}</td>
@@ -15,41 +23,43 @@ function DeviceRow({device, deleteDevice}) {
         <td>{device.last_message || "N/A"}</td>
         <td>
             <ButtonGroup>
-                <Button variant="outline-primary">Üzenetek</Button>
-                <Button variant="outline-info">Szabályok</Button>
-                <Button variant="outline-secondary">Szerkesztés</Button>
-                <Button variant="outline-danger" onClick={() => deleteDevice(device)}>Törlés</Button>
+                <Link to={`/device/${device.id}/message`}><Button size="sm" variant="outline-primary">Üzenetek</Button></Link>
+                <Button size="sm" variant="outline-info">Szabályok ({device.rule_count})</Button>
+                <Button size="sm" variant="outline-secondary"
+                        onClick={() => showEditDeviceModal(device)}>Szerkesztés</Button>
+                <Button size="sm" variant="outline-danger" onClick={confirmDelete}>Törlés</Button>
             </ButtonGroup>
         </td>
     </tr>
 }
 
-const ConnectedDeviceRow = connect(null, {deleteDevice})(DeviceRow);
+const ConnectedDeviceRow = connect(null, {deleteDevice, showEditDeviceModal})(DeviceRow);
 
 function DevicesList({devices, error, isLoading}) {
     if (isLoading || !devices)
         return <InProgressSpinner/>;
-    if (error)
-        return <ErrorAlert error={error.message}/>;
-    return <Table striped>
-        <colgroup>
-            <col className="col-md-1"/>
-            <col className="col-md-2"/>
-            <col className="col-md-3"/>
-            <col className="col-md-2"/>
-            <col className="col-md-4"/>
-        </colgroup>
-        <thead>
-        <th>Id</th>
-        <th>Név</th>
-        <th>Megjegyzés</th>
-        <th>Utolsó üzenet</th>
-        <th>Műveletek</th>
-        </thead>
-        <tbody>
-        {devices.map(device => <ConnectedDeviceRow device={device}/>)}
-        </tbody>
-    </Table>
+    return <>
+        {error && <ErrorAlert error={error.message}/>}
+        <Table striped>
+            <colgroup>
+                <col style={{"width": "5%"}}/>
+                <col style={{"width": "10%"}}/>
+                <col style={{"width": "30%"}}/>
+                <col style={{"width": "15%"}}/>
+                <col style={{"width": "30%"}}/>
+            </colgroup>
+            <thead>
+            <th>Id</th>
+            <th>Név</th>
+            <th>Megjegyzés</th>
+            <th>Utolsó üzenet</th>
+            <th>Műveletek</th>
+            </thead>
+            <tbody>
+            {devices.map(device => <ConnectedDeviceRow device={device}/>)}
+            </tbody>
+        </Table>
+    </>
 }
 
 const ConnectedDevicesList = connect(state => ({...state.devices}))(DevicesList);
@@ -57,7 +67,7 @@ const ConnectedDevicesList = connect(state => ({...state.devices}))(DevicesList)
 function Devices({getDevices, showAddDeviceModal}) {
     useEffect(getDevices, []);
     return <>
-        <DeviceEditModal />
+        <DeviceEditModal/>
         <h1>Eszközök</h1>
         <div className="d-flex">
             <ButtonGroup className="mb-3 ml-auto">

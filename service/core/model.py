@@ -40,8 +40,8 @@ class Device(Base):
 
 
 class MessageDirection(enum.Enum):
-    INBOUND = 1
-    OUTBOUND = 2
+    INBOUND = "INBOUND"
+    OUTBOUND = "OUTBOUND"
 
 
 class Message(Base):
