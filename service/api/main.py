@@ -38,7 +38,6 @@ app.include_router(
 
 app.include_router(
     rule.router,
-    prefix="/device",
     tags=["rule"]
 )
 
