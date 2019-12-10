@@ -27,9 +27,9 @@ export default function (state = initialState, action) {
                 modal: {...state.modal, show: false, inProgress: false}
             };
         case DEVICES_IN_PROGRESS:
-            return {devices: [], isLoading: true, error: null};
+            return {...state, devices: [], isLoading: true, error: null};
         case DEVICES_LOADED:
-            return {devices: action.devices, isLoading: false, error: null};
+            return {...state, devices: action.devices, isLoading: false, error: null};
         case DEVICE_LOAD_ERROR:
             return {...state, isLoading: false, error: action.error};
         default:

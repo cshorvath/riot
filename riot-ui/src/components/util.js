@@ -22,3 +22,27 @@ export const InProgressSpinner = visible(
         <Spinner animation={"grow"}/>
     </div>
 );
+
+
+export function formatDeviceTitle(device) {
+    if (!device || !device.name || !device.id) return "";
+    return `${device.name}[${device.id}]`;
+}
+
+const conditionFormat = {
+    "LT": (field, arg1) => `${field} < ${arg1}`,
+    "LTE": (field, arg1) => `${field} <= ${arg1}`,
+    "GT": (field, arg1) => `${field} > ${arg1}`,
+    "GTE": (field, arg1) => `${field} >= ${arg1}`,
+    "EQ": (field, arg1) => `${field} == ${arg1}`,
+    "NE": (field, arg1) => `${field} != ${arg1}`,
+    "BETWEEN": (field, arg1, arg2) => `${arg1} <= ${field} <= ${arg2}`,
+    "ANY": (field) => `!!${field}`
+};
+
+export function conditionFormatter(operator, field, arg1, arg2) {
+    const formatter = conditionFormat[operator];
+    if (!formatter) return "N/A";
+    return formatter(field, arg1, arg2);
+
+}

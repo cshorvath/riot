@@ -18,7 +18,7 @@ class RuleResponse(CommonModel):
     action_arg: str
     operator: RuleOperator
     operator_arg_1: float
-    operator_arg_2: float
+    operator_arg_2: Optional[float]
 
 
 class NewRule(CommonModel):
@@ -29,7 +29,7 @@ class NewRule(CommonModel):
     action_arg: str
     operator: RuleOperator
     operator_arg_1: float
-    operator_arg_2: float
+    operator_arg_2: Optional[float]
 
 
 class PatchRule(CommonModel):

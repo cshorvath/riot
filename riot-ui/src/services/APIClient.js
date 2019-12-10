@@ -61,9 +61,25 @@ class APIClient {
         ).data;
     }
 
+    async getRules(deviceId) {
+        return (await this.callAPI("GET", `/device/${deviceId}/rule`)).data;
+    }
+
+    async addRule(deviceId, rule) {
+        return (await this.callAPI("POST", `/device/${deviceId}/rule`, null, rule));
+    }
+
+    async deleteRule(deviceId, ruleId) {
+        return this.callAPI("DELETE", `/device/${deviceId}/rule/${ruleId}`);
+    }
+
+    async updateRule(deviceId, ruleId, rule) {
+        return (await this.callAPI("PATCH", `/device/${deviceId}/rule/${ruleId}`, null, rule));
+    }
+
     async callAPI(method, url, params = null, body = null) {
         try {
-            const response = await axios.request({
+            return await axios.request({
                 url: this._baseUrl + url,
                 method,
                 params,
@@ -72,12 +88,12 @@ class APIClient {
                     'Authorization': 'Bearer ' + localStorage.getItem("token")
                 }
             });
-            return response;
         } catch (e) {
             if (!e.response) {
                 throw new APIError("Network error")
             }
-            throw new APIError(e.response.statusText, e.response.status)
+            const detail = (e.response.data && e.response.data.detail) || e.response.statusText
+            throw new APIError(detail, e.response.status)
         }
     }
 

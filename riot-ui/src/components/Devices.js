@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import Table from "react-bootstrap/Table";
-import {addDevice, deleteDevice, getDevices, showAddDeviceModal, showEditDeviceModal} from "../actions/devices";
+import {deleteDevice, getDevices, showAddDeviceModal, showEditDeviceModal} from "../actions/devices";
 import {ErrorAlert, InProgressSpinner} from "./util";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -24,7 +24,8 @@ function DeviceRow({device, deleteDevice, showEditDeviceModal}) {
         <td>
             <ButtonGroup>
                 <Link to={`/device/${device.id}/message`}><Button size="sm" variant="outline-primary">Üzenetek</Button></Link>
-                <Button size="sm" variant="outline-info">Szabályok ({device.rule_count})</Button>
+                <Link to={`/device/${device.id}/rule`}><Button size="sm" variant="outline-info">Szabályok
+                    ({device.rule_count})</Button></Link>
                 <Button size="sm" variant="outline-secondary"
                         onClick={() => showEditDeviceModal(device)}>Szerkesztés</Button>
                 <Button size="sm" variant="outline-danger" onClick={confirmDelete}>Törlés</Button>
@@ -81,4 +82,4 @@ function Devices({getDevices, showAddDeviceModal}) {
     </>
 }
 
-export default connect(null, {getDevices, showAddDeviceModal, addDevice})(Devices)
+export default connect(null, {getDevices, showAddDeviceModal})(Devices)

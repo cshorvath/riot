@@ -1,6 +1,6 @@
 import APIClient from "../services/APIClient";
 
-export const DEVICES_IN_PROGRESS = "GET_DEVICES";
+export const DEVICES_IN_PROGRESS = "DEVICES_IN_PROGRESS";
 export const DEVICES_LOADED = "DEVICES_LOADED";
 export const DEVICE_LOAD_ERROR = "DEVICE_LOAD_ERROR";
 export const SHOW_ADD_DEVICE_MODAL = "SHOW_ADD_DEVICE_MODAL";
@@ -12,7 +12,10 @@ function devicesLoaded(devices) {
 }
 
 function deviceError(error) {
-    return {type: DEVICE_LOAD_ERROR, error};
+    return dispatch => {
+        dispatch(hideDeviceModal());
+        dispatch({type: DEVICE_LOAD_ERROR, error});
+    };
 }
 
 
@@ -32,7 +35,6 @@ export function getDevices() {
 
 export function deleteDevice(deviceId) {
     return dispatch => {
-        dispatch(deviceInProgress());
         APIClient.deleteDevice(deviceId)
             .then(() => dispatch(getDevices()),
                 error => dispatch(deviceError(error)));
@@ -41,7 +43,6 @@ export function deleteDevice(deviceId) {
 
 export function addDevice(device) {
     return dispatch => {
-        dispatch(deviceInProgress());
         APIClient.addDevice(device)
             .then(
                 () => {
@@ -54,7 +55,6 @@ export function addDevice(device) {
 
 export function updateDevice(deviceId, deviceData) {
     return dispatch => {
-        dispatch(deviceInProgress());
         APIClient.updateDevice(deviceId, deviceData)
             .then(
                 () => {
@@ -65,7 +65,7 @@ export function updateDevice(deviceId, deviceData) {
     }
 }
 
-export function showAddDeviceModal(onSubmit) {
+export function showAddDeviceModal() {
     return {
         type: SHOW_ADD_DEVICE_MODAL
     }

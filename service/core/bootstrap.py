@@ -8,7 +8,7 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 
 def get_db_engine(host, user, password, db, port=3306):
-    return create_engine(f"mysql+mysqldb://{user}:{password}@{host}:{port}/{db}", convert_unicode=True)
+    return create_engine(f"mysql+mysqldb://{user}:{password}@{host}:{port}/{db}?charset=utf8", convert_unicode=True)
 
 
 @contextmanager

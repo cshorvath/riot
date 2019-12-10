@@ -3,7 +3,7 @@ import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import {getMessages} from "../actions/messages";
 import Pagination from "react-bootstrap/Pagination";
-import {ErrorAlert, InProgressSpinner} from "./util";
+import {ErrorAlert, formatDeviceTitle, InProgressSpinner} from "./util";
 import Table from "react-bootstrap/Table";
 import Chart from "./Chart";
 import {MESSAGES_PER_PAGE} from "../reducers/constant";
@@ -100,7 +100,7 @@ function Messages({match, isLoading, device, items = [], pageCount, recordCount,
     useEffect(() => getMessages(deviceId, page), [page, deviceId, getMessages]);
     return <>
         <div className={"d-flex justify-content-between"}>
-            <h1>Üzenetek - {device && device.name}</h1>
+            <h1>Üzenetek - {formatDeviceTitle(device)}</h1>
             <div className="align-self-center mr-2">
                 <Button onClick={() => getMessages(deviceId, page)} variant="success">
                     Frissítés

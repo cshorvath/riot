@@ -7,6 +7,7 @@ import Login from "./Login";
 import {Redirect} from "react-router";
 import {connect} from "react-redux";
 import Messages from "./Messages";
+import Rules from "./Rules";
 
 
 
@@ -23,6 +24,7 @@ const App = function ({loggedIn}) {
                 <Route exact path="/"><Redirect to="/device"/></Route>
                 <Route exact path="/device" component={authReq(Devices)}/>
                 <Route exact path="/device/:deviceId/message" component={authReq(Messages)}/>
+                <Route exact path="/device/:deviceId/rule" component={authReq(Rules)}/>
             </Switch>
         </Container>
     </BrowserRouter>

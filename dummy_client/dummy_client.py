@@ -16,7 +16,7 @@ def on_message(client, userdata, message: mqtt.MQTTMessage):
     print(client, userdata, message.payload, message.qos)
 
 
-topic = "riot/device/2/outgoing"
+topic = "riot/device/101/outgoing"
 limit = int(argv[1])
 
 mqtt_broker = os.getenv("MQTT_HOST", "localhost")

@@ -47,11 +47,11 @@ def update_rule(
 ):
     rule = rule_repository.patch_rule(db, rule_id, rule)
     if not rule:
-        return rule
-    raise HTTPException(
-        status_code=HTTP_404_NOT_FOUND,
-        detail="Rule not found."
-    )
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail="Rule not found."
+        )
+    return rule
 
 
 @router.delete("/device/{device_id}/rule/{rule_id}", dependencies=[Depends(owner_user)])
@@ -59,10 +59,8 @@ def delete_rule(
         rule_id: int,
         db: Session = Depends(get_db)
 ):
-    rule = rule_repository.delete_rule(db, rule_id)
-    if not rule:
-        return rule
-    raise HTTPException(
-        status_code=HTTP_404_NOT_FOUND,
-        detail="Rule not found."
-    )
+    if not rule_repository.delete_rule(db, rule_id):
+        raise HTTPException(
+            status_code=HTTP_404_NOT_FOUND,
+            detail="Rule not found."
+        )
