@@ -6,10 +6,9 @@ from sqlalchemy.orm import Session, Query
 
 from core.model import Message
 
-MAX_MESSAGE_PER_PAGE = 100
 
-
-def get_messages(db: Session, device_id: int, begin: datetime, end: datetime, page=1) -> Tuple[List[Message], int]:
+def get_messages(db: Session, device_id: int, begin: datetime, end: datetime, page=1, records_per_page: int = 100) -> \
+Tuple[List[Message], int]:
     filters = [Message.device_id == device_id]
     if begin:
         filters.append(Message.timestamp >= begin)
@@ -18,4 +17,4 @@ def get_messages(db: Session, device_id: int, begin: datetime, end: datetime, pa
 
     query: Query = db.query(Message).filter(and_(*filters))
     record_count = query.count()
-    return query.limit(MAX_MESSAGE_PER_PAGE).offset((page - 1) * MAX_MESSAGE_PER_PAGE).all(), record_count
+    return query.limit(records_per_page).offset((page - 1) * records_per_page).all(), record_count

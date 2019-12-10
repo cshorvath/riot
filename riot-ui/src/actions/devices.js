@@ -24,21 +24,19 @@ export function getDevices() {
     return dispatch => {
         dispatch(deviceInProgress());
         APIClient.getDevices().then(
-            devices => dispatch(devicesLoaded(devices),
-                error => dispatch(deviceError(error)
-                )
-            )
+            devices => dispatch(devicesLoaded(devices)),
+            error => dispatch(deviceError(error))
         );
     }
 }
 
 export function deleteDevice(deviceId) {
-        return dispatch => {
-            dispatch(deviceInProgress());
-            APIClient.deleteDevice(deviceId)
-                .then(() => dispatch(getDevices()),
-                    error => dispatch(deviceError(error)));
-        }
+    return dispatch => {
+        dispatch(deviceInProgress());
+        APIClient.deleteDevice(deviceId)
+            .then(() => dispatch(getDevices()),
+                error => dispatch(deviceError(error)));
+    }
 }
 
 export function addDevice(device) {

@@ -40,7 +40,7 @@ function DevicesList({devices, error, isLoading}) {
         return <InProgressSpinner/>;
     return <>
         {error && <ErrorAlert error={error.message}/>}
-        <Table striped>
+        <Table hover bordered className="data-table">
             <colgroup>
                 <col style={{"width": "5%"}}/>
                 <col style={{"width": "10%"}}/>
@@ -49,14 +49,16 @@ function DevicesList({devices, error, isLoading}) {
                 <col style={{"width": "30%"}}/>
             </colgroup>
             <thead>
-            <th>Id</th>
-            <th>Név</th>
-            <th>Megjegyzés</th>
-            <th>Utolsó üzenet</th>
-            <th>Műveletek</th>
+            <tr>
+                <th>Id</th>
+                <th>Név</th>
+                <th>Megjegyzés</th>
+                <th>Utolsó üzenet</th>
+                <th>Műveletek</th>
+            </tr>
             </thead>
             <tbody>
-            {devices.map(device => <ConnectedDeviceRow device={device}/>)}
+            {devices.map(device => <ConnectedDeviceRow device={device} key={"device" + device.id}/>)}
             </tbody>
         </Table>
     </>

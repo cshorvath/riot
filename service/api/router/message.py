@@ -19,9 +19,10 @@ def get_messages(
         begin: datetime = None,
         end: datetime = None,
         page: conint(ge=1) = 1,
+        records_per_page: conint(ge=0) = 100,
         db: Session = Depends(get_db)):
-    messages, record_count = message_repository.get_messages(db, device_id, begin, end, page)
-    page_count = math.ceil(record_count / message_repository.MAX_MESSAGE_PER_PAGE)
+    messages, record_count = message_repository.get_messages(db, device_id, begin, end, page, records_per_page)
+    page_count = math.ceil(record_count / records_per_page)
     return MessageResponse(
         page=page,
         page_count=page_count,

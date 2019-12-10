@@ -23,15 +23,16 @@ mqtt_broker = os.getenv("MQTT_HOST", "localhost")
 client = mqtt.Client("DummyClient", clean_session=False)
 client.connect(mqtt_broker, 1883, 60)
 c = 0
-
+dt = datetime.datetime(2019, 11, 18, 10, 10, 00)
 client.on_publish = lambda client, userdata, mid: print(mid)
 while True:
     msg_info = client.publish(
         topic=topic,
-        payload=json.dumps({"timestamp": datetime.datetime.now().timestamp() * 1000,
+        payload=json.dumps({"timestamp": dt.timestamp() * 1000,
                             "payload": {"temperature": random.randint(20, 40), "humidity": random.randint(50, 100)}}),
         qos=2
     )
     c += 1
+    dt += datetime.timedelta(minutes=1)
     sleep(0.01)
     client.loop(1, 100)

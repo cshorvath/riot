@@ -16,9 +16,10 @@ router = APIRouter()
 @router.get("/", response_model=List[dto.DeviceResponse])
 def get_owned_devices(db: Session = Depends(get_db),
                       user: User = Depends(get_current_user)):
-    devices_with_rule_count = device_repository.get_devices_of_user(db, user)
-    return [dto.DeviceResponse(id=d.id, name=d.name, description=d.description, rule_count=r) for d, r in
-            devices_with_rule_count]
+    devices_with_rule_count_and_last_msg = device_repository.get_devices_of_user(db, user)
+    return [dto.DeviceResponse(id=d.id, name=d.name, description=d.description, rule_count=r, last_message=l) for
+            d, r, l in
+            devices_with_rule_count_and_last_msg]
 
 
 @router.post("/", response_model=dto.DeviceResponse)
@@ -50,7 +51,7 @@ def delete_device(device_id: int,
 @router.patch("/{device_id}", dependencies=[Depends(owner_user)])
 def update_device(
         device_id: int,
-        device: dto.PatchDevice,
+        device: dto.Device,
         db: Session = Depends(get_db)):
     db_device, rule_count = device_repository.update_device(db, device_id, device)
     if not db_device:

@@ -54,8 +54,11 @@ class APIClient {
         return this.callAPI("DELETE", "/device/" + deviceId)
     }
 
-    async getMessages(deviceId, page) {
-        return (await this.callAPI("GET", `/device/${deviceId}/message`, {page})).data;
+    async getMessages(deviceId, page, recordsPerPage) {
+        return (
+            await this.callAPI("GET", `/device/${deviceId}/message`,
+                {page, records_per_page: recordsPerPage})
+        ).data;
     }
 
     async callAPI(method, url, params = null, body = null) {
@@ -69,7 +72,6 @@ class APIClient {
                     'Authorization': 'Bearer ' + localStorage.getItem("token")
                 }
             });
-            console.log(response);
             return response;
         } catch (e) {
             if (!e.response) {

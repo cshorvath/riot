@@ -1,4 +1,5 @@
 import APIClient from "../services/APIClient";
+import {MESSAGES_PER_PAGE} from "../reducers/constant";
 
 export const MESSAGES_LOADING = "MESSAGES_LOADING";
 export const MESSAGES_LOADED = "MESSAGES_LOADED";
@@ -36,7 +37,7 @@ export function getMessages(deviceId, page) {
         dispatch(messagesLoading());
         APIClient.getDevice(deviceId)
             .then(
-                (device) => APIClient.getMessages(deviceId, page)
+                (device) => APIClient.getMessages(deviceId, page, MESSAGES_PER_PAGE)
                     .then(
                         data => dispatch(messagesLoaded(device, data)),
                         error => dispatch(messagesError(error))

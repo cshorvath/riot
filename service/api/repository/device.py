@@ -1,14 +1,15 @@
 from typing import Optional, List, Tuple
 
 from sqlalchemy.orm import Session, Query, joinedload
+from sqlalchemy.orm.exc import NoResultFound
 
 import api.model.device as dto
+from api.util.exception import NotFoundException
 from core.model import Device, User, user_device
 
 
 def _query_single_device(db: Session, device_id: int) -> Query:
-    query = db.query(Device).options(joinedload(Device.source_rules)) \
-        .filter(Device.id == device_id)
+    query = db.query(Device).filter(Device.id == device_id)
     return query
 
 
@@ -26,16 +27,19 @@ def create_device(db: Session, device: dto.Device, user: User):
     return db_device
 
 
-def get_devices_of_user(db: Session, user: User) -> List[Tuple[Device, int]]:
-    query = db.query(Device).options(joinedload(Device.source_rules))
+def get_devices_of_user(db: Session, user: User) -> List[Tuple[Device, int, int]]:
+    query = db.query(Device)
     if not user.admin:
         query = query.join(Device.owners).filter(User.id == user.id)
     devices = query.all()
-    return [(device, len(device.source_rules)) for device in devices]
+    return [(device, len(device.source_rules), len(device.messages)) for device in devices]
 
 
-def get_device(db: Session, device_id: int) -> Tuple[Device, int]:
-    device = _query_single_device(db, device_id).one()
+def get_device(db: Session, device_id: int) -> Tuple[Optional[Device], Optional[int]]:
+    try:
+        device = _query_single_device(db, device_id).one()
+    except NoResultFound:
+        return None, None
     rule_count = len(device.source_rules) if device else None
     return device, rule_count
 
@@ -46,7 +50,7 @@ def delete_device(db: Session, device_id: int):
     return result
 
 
-def update_device(db: Session, device_id: int, device: dto.PatchDevice) -> Optional[
+def update_device(db: Session, device_id: int, device: dto.Device) -> Optional[
     Tuple[Optional[Device], Optional[int]]]:
     result = _query_single_device(db, device_id).update(device.dict(exclude_unset=True))
     db.commit()

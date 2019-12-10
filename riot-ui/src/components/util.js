@@ -19,6 +19,6 @@ export function visible(child) {
 
 export const InProgressSpinner = visible(
     <div className="text-center">
-        <Spinner animation={"border"}/>
+        <Spinner animation={"grow"}/>
     </div>
 );
