@@ -19,7 +19,7 @@ const App = function ({loggedIn}) {
 
     return <BrowserRouter>
         <Header/>
-        <Container className="mt-3" fluid>
+        <Container className="mt-3">
             <Switch>
                 <Route exact path="/"><Redirect to="/device"/></Route>
                 <Route exact path="/device" component={authReq(Devices)}/>

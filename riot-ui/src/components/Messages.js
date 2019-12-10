@@ -9,7 +9,11 @@ import Chart from "./Chart";
 import {MESSAGES_PER_PAGE} from "../reducers/constant";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import Button from "react-bootstrap/Button";
+import {RefreshButton} from "./buttons";
+import {faChartLine} from "@fortawesome/free-solid-svg-icons/faChartLine";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTable} from "@fortawesome/free-solid-svg-icons/faTable";
+import {faInbox} from "@fortawesome/free-solid-svg-icons/faInbox";
 
 function collectRecordKeys(items) {
     const keys = new Set();
@@ -83,10 +87,10 @@ function MessagesBody({isLoading, items, recordCount, page, pageCount, error, se
     return <>
         {paginator}
         <Tabs id="controlled-tab-example" activeKey={tab} onSelect={k => setTab(k)}>
-            <Tab eventKey="table" title="Táblázat">
+            <Tab eventKey="table" title={<><FontAwesomeIcon icon={faTable}/>Táblázat</>}>
                 <MessageTable isLoading={isLoading} items={items} recordKeys={recordKeys}/>
             </Tab>
-            <Tab eventKey="chart" title="Grafikon">
+            <Tab eventKey="chart" title={<><FontAwesomeIcon icon={faChartLine}/>Grafikon</>}>
                 <Chart items={items} recordKeys={recordKeys}/>
             </Tab>
         </Tabs>
@@ -100,11 +104,10 @@ function Messages({match, isLoading, device, items = [], pageCount, recordCount,
     useEffect(() => getMessages(deviceId, page), [page, deviceId, getMessages]);
     return <>
         <div className={"d-flex justify-content-between"}>
-            <h1>Üzenetek - {formatDeviceTitle(device)}</h1>
+            <h1><FontAwesomeIcon icon={faInbox}/> Üzenetek - {formatDeviceTitle(device)}</h1>
             <div className="align-self-center mr-2">
-                <Button onClick={() => getMessages(deviceId, page)} variant="success">
-                    Frissítés
-                </Button></div>
+                <RefreshButton onClick={() => getMessages(deviceId, page)}/>
+            </div>
         </div>
         <MessagesBody isLoading={isLoading}
                       items={items}

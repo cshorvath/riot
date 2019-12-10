@@ -6,14 +6,17 @@ import Dropdown from "react-bootstrap/Dropdown";
 import NavItem from "react-bootstrap/NavItem";
 import {connect} from "react-redux";
 import {logout} from "../actions/login";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSignOutAlt} from "@fortawesome/free-solid-svg-icons/faSignOutAlt";
+import {faUser} from "@fortawesome/free-solid-svg-icons/faUser";
 
 
 function UserMenu({user, logout}) {
     if (!user) return null;
     return <Dropdown alignRight as={NavItem}>
-        <Dropdown.Toggle as={Nav.Link}>{user.name} {user.admin ? " (admin)" : ""}</Dropdown.Toggle>
+        <Dropdown.Toggle as={Nav.Link}><FontAwesomeIcon icon={faUser}/> {user.name} {user.admin ? "(admin)" : ""}</Dropdown.Toggle>
         <Dropdown.Menu>
-            <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+            <Dropdown.Item onClick={logout}><FontAwesomeIcon icon={faSignOutAlt}/> Logout</Dropdown.Item>
         </Dropdown.Menu>
     </Dropdown>;
 }

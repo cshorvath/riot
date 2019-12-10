@@ -1,6 +1,7 @@
 import Alert from "react-bootstrap/Alert";
 import React from "react";
 import Spinner from "react-bootstrap/Spinner";
+import {conditionFormat, RULE_ACTIONS} from "../reducers/constant";
 
 export function ErrorAlert({error}) {
     if (error)
@@ -29,20 +30,17 @@ export function formatDeviceTitle(device) {
     return `${device.name}[${device.id}]`;
 }
 
-const conditionFormat = {
-    "LT": (field, arg1) => `${field} < ${arg1}`,
-    "LTE": (field, arg1) => `${field} <= ${arg1}`,
-    "GT": (field, arg1) => `${field} > ${arg1}`,
-    "GTE": (field, arg1) => `${field} >= ${arg1}`,
-    "EQ": (field, arg1) => `${field} == ${arg1}`,
-    "NE": (field, arg1) => `${field} != ${arg1}`,
-    "BETWEEN": (field, arg1, arg2) => `${arg1} <= ${field} <= ${arg2}`,
-    "ANY": (field) => `!!${field}`
-};
-
 export function conditionFormatter(operator, field, arg1, arg2) {
     const formatter = conditionFormat[operator];
     if (!formatter) return "N/A";
     return formatter(field, arg1, arg2);
+}
+
+export function actionFormatter(actionType, targetDevice, actionArg) {
+    switch (actionType) {
+        case RULE_ACTIONS.SEND_EMAIL:
+            return
+
+    }
 
 }

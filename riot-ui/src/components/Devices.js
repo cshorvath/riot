@@ -2,11 +2,13 @@ import React, {useEffect} from "react";
 import Table from "react-bootstrap/Table";
 import {deleteDevice, getDevices, showAddDeviceModal, showEditDeviceModal} from "../actions/devices";
 import {ErrorAlert, InProgressSpinner} from "./util";
-import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import {connect} from "react-redux";
 import DeviceEditModal from "./DeviceEditModal";
-import {Link} from "react-router-dom";
+import {LinkContainer} from 'react-router-bootstrap'
+import {AddButton, DeleteButton, EditButton, MessagesButton, RefreshButton, RulesButton} from "./buttons";
+import {faBroadcastTower} from "@fortawesome/free-solid-svg-icons/faBroadcastTower";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 function DeviceRow({device, deleteDevice, showEditDeviceModal}) {
 
@@ -23,12 +25,10 @@ function DeviceRow({device, deleteDevice, showEditDeviceModal}) {
         <td>{device.last_message || "N/A"}</td>
         <td>
             <ButtonGroup>
-                <Link to={`/device/${device.id}/message`}><Button size="sm" variant="outline-primary">Üzenetek</Button></Link>
-                <Link to={`/device/${device.id}/rule`}><Button size="sm" variant="outline-info">Szabályok
-                    ({device.rule_count})</Button></Link>
-                <Button size="sm" variant="outline-secondary"
-                        onClick={() => showEditDeviceModal(device)}>Szerkesztés</Button>
-                <Button size="sm" variant="outline-danger" onClick={confirmDelete}>Törlés</Button>
+                <LinkContainer to={`/device/${device.id}/message`}><MessagesButton/></LinkContainer>
+                <LinkContainer to={`/device/${device.id}/rule`}><RulesButton count={device.rule_count}/></LinkContainer>
+                <EditButton onClick={() => showEditDeviceModal(device)}/>
+                <DeleteButton onClick={confirmDelete}/>
             </ButtonGroup>
         </td>
     </tr>
@@ -41,7 +41,7 @@ function DevicesList({devices, error, isLoading}) {
         return <InProgressSpinner/>;
     return <>
         {error && <ErrorAlert error={error.message}/>}
-        <Table hover bordered className="data-table">
+        <Table size={"sm"} hover bordered className="data-table">
             <colgroup>
                 <col style={{"width": "5%"}}/>
                 <col style={{"width": "10%"}}/>
@@ -71,11 +71,11 @@ function Devices({getDevices, showAddDeviceModal}) {
     useEffect(getDevices, []);
     return <>
         <DeviceEditModal/>
-        <h1>Eszközök</h1>
+        <h1><FontAwesomeIcon icon={faBroadcastTower}/> Eszközök</h1>
         <div className="d-flex">
             <ButtonGroup className="mb-3 ml-auto">
-                <Button variant="success" onClick={showAddDeviceModal}>Hozzáadás</Button>
-                <Button variant="primary" onClick={getDevices}>Frissítés</Button>
+                <AddButton onClick={showAddDeviceModal}/>
+                <RefreshButton onClick={getDevices}/>
             </ButtonGroup>
         </div>
         <ConnectedDevicesList/>
