@@ -15,7 +15,7 @@ function loginSuccess(user) {
 function loginError(error) {
     return {
         type: LOGIN_ERROR,
-        error
+        error: error.state === 401 ? "Hibás felhasználónév vagy jelszó." : "Hálózati hiba"
     }
 }
 
@@ -23,7 +23,7 @@ function login(user, password) {
     return dispatch => APIClient.loginAndGetUser(user, password)
         .then(
             user => dispatch(loginSuccess(user)),
-            error => dispatch(loginError(error.detail))
+            error => dispatch(loginError(error))
         );
 }
 
@@ -34,7 +34,7 @@ export function getUserWithStoredToken() {
             APIClient.getCurrentUser()
                 .then(
                     user => dispatch(loginSuccess(user)),
-                    e => dispatch(loginError())
+                    e => dispatch(loginError(e))
                 );
         });
     }

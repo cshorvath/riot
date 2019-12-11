@@ -39,13 +39,13 @@ def add_rule_for_device(
     return rule_repository.insert_rule(db, device_id, rule, user)
 
 
-@router.patch("/device/{device_id}/rule/{rule_id}", dependencies=[Depends(owner_user)], response_model=RuleResponse)
+@router.put("/device/{device_id}/rule/{rule_id}", dependencies=[Depends(owner_user)], response_model=RuleResponse)
 def update_rule(
         rule_id: int,
         rule: PatchRule,
         db: Session = Depends(get_db)
 ):
-    rule = rule_repository.patch_rule(db, rule_id, rule)
+    rule = rule_repository.update_rule(db, rule_id, rule)
     if not rule:
         raise HTTPException(
             status_code=HTTP_404_NOT_FOUND,

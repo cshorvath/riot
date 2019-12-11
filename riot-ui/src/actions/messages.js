@@ -1,5 +1,5 @@
 import APIClient from "../services/APIClient";
-import {MESSAGES_PER_PAGE} from "../reducers/constant";
+import {MESSAGES_PER_PAGE} from "../constant";
 
 export const MESSAGES_RESET = "MESSAGES_RESET";
 export const MESSAGES_LOADING = "MESSAGES_LOADING";

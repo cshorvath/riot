@@ -1,12 +1,12 @@
 import React, {useEffect} from "react";
 import Table from "react-bootstrap/Table";
 import {deleteDevice, getDevices, showAddDeviceModal, showEditDeviceModal} from "../actions/devices";
-import {ErrorAlert, InProgressSpinner} from "./util";
+import {ErrorAlert, InProgressSpinner} from "./util/util";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import {connect} from "react-redux";
 import DeviceEditModal from "./DeviceEditModal";
 import {LinkContainer} from 'react-router-bootstrap'
-import {AddButton, DeleteButton, EditButton, MessagesButton, RefreshButton, RulesButton} from "./buttons";
+import {AddButton, DeleteButton, EditButton, MessagesButton, RefreshButton, RulesButton} from "./util/buttons";
 import {faBroadcastTower} from "@fortawesome/free-solid-svg-icons/faBroadcastTower";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 

@@ -20,13 +20,7 @@ logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message
 
 def main():
     config: ConfigNode = parse_config_from_env("RIOT_DATA_PROCESSOR_CONFIG")
-
     logging.info(f"Data processor is started, configuration:\n{config}")
-
-    email_service: ActionHandler = email_service_factory(
-        config.email.implementation,
-        config.email.get("arguments", None)
-    )
 
     db_engine = get_db_engine(
         host=config.db.host,
@@ -34,6 +28,11 @@ def main():
         user=config.db.user,
         password=config.db.password,
         db=config.db.database
+    )
+
+    email_service: ActionHandler = email_service_factory(
+        config.email.implementation,
+        config.email.get("arguments", None)
     )
 
     with get_db_session(db_engine) as db_session:

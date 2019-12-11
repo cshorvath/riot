@@ -1,11 +1,13 @@
 import axios from "axios";
+import {ERRORS} from "../constant";
 
 
 class APIError extends Error {
-    constructor(detail, statusCode) {
-        super(`${statusCode}: ${detail}`);
-        this.statusCode = statusCode;
+    constructor(detail, status) {
+        super(`${status}: ${detail}`);
+        this.status = status;
         this.detail = detail;
+        console.log(status)
     }
 }
 
@@ -46,8 +48,9 @@ class APIClient {
         return this.callAPI("POST", "/device/", null, device);
     }
 
-    async updateDevice(deviceId, deviceData) {
-        return this.callAPI("PATCH", "/device/" + deviceId, null, deviceData);
+    static _formatMessage(response) {
+        if (!response) return "Hálózati hiba";
+        return ERRORS[response.status] || response.statusText;
     }
 
     async deleteDevice(deviceId) {
@@ -73,8 +76,16 @@ class APIClient {
         return this.callAPI("DELETE", `/device/${deviceId}/rule/${ruleId}`);
     }
 
+    async updateDevice(deviceId, deviceData) {
+        return this.callAPI("PUT", "/device/" + deviceId, null, deviceData);
+    }
+
     async updateRule(deviceId, ruleId, rule) {
-        return (await this.callAPI("PATCH", `/device/${deviceId}/rule/${ruleId}`, null, rule));
+        return (await this.callAPI("PUT", `/device/${deviceId}/rule/${ruleId}`, null, rule));
+    }
+
+    logout() {
+        localStorage.setItem("token", null);
     }
 
     async callAPI(method, url, params = null, body = null) {
@@ -89,16 +100,9 @@ class APIClient {
                 }
             });
         } catch (e) {
-            if (!e.response) {
-                throw new APIError("Network error")
-            }
-            const detail = (e.response.data && e.response.data.detail) || e.response.statusText
-            throw new APIError(detail, e.response.status)
+            console.log(JSON.stringify(e));
+            throw new APIError(APIClient._formatMessage(e.response), e.response.status)
         }
-    }
-
-    logout() {
-        localStorage.setItem("token", null);
     }
 }
 

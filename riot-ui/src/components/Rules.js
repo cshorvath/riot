@@ -3,12 +3,27 @@ import {connect} from "react-redux";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import React, {useEffect} from "react";
 import {deleteRule, getRules, rulesReset, showAddRuleModal, showEditRuleModal} from "../actions/rules";
-import {conditionFormatter, ErrorAlert, formatDeviceTitle, InProgressSpinner, RuleAction} from "./util";
+import {conditionFormatter, ErrorAlert, formatDeviceTitle, InProgressSpinner} from "./util/util";
 import Table from "react-bootstrap/Table";
-import {AddButton, DeleteButton, EditButton, RefreshButton} from "./buttons";
+import {AddButton, DeleteButton, EditButton, RefreshButton} from "./util/buttons";
 import RuleEditModal from "./RuleEditModal";
 import {faCogs} from "@fortawesome/free-solid-svg-icons/faCogs";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {RULE_ACTIONS} from "../constant";
+import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
+import {faForward} from "@fortawesome/free-solid-svg-icons/faForward";
+
+function RuleAction({actionType, targetDevice, actionArg}) {
+    switch (actionType) {
+        case RULE_ACTIONS.SEND_EMAIL:
+            return <><FontAwesomeIcon icon={faEnvelope}/> {actionArg}</>;
+        case RULE_ACTIONS.FORWARD:
+            return <><FontAwesomeIcon icon={faForward}/> {formatDeviceTitle(targetDevice)}</>;
+        default:
+            return <>"N/A"</>
+    }
+}
+
 
 function RuleRow({deviceId, rule, deleteRule, showEditRuleModal}) {
 

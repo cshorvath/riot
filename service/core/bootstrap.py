@@ -4,7 +4,8 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 
 def get_db_engine(host, user, password, db, port=3306):

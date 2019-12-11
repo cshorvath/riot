@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {InProgressSpinner} from "./util";
+import {InProgressSpinner} from "./util/util";
 import {connect} from "react-redux";
 import {addDevice, hideDeviceModal, updateDevice} from "../actions/devices";
 
@@ -44,7 +44,7 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice, hid
                         Név
                     </Form.Label>
                     <Col md="9">
-                        <Form.Control name="name" type="text" defaultValue={name} required="required"/>
+                        <Form.Control name="name" type="text" defaultValue={name} required="required" minLength={3}/>
                     </Col>
                 </Form.Group>
 

@@ -48,7 +48,7 @@ def delete_device(device_id: int,
         raise HTTPException(status_code=HTTP_404_NOT_FOUND)
 
 
-@router.patch("/{device_id}", dependencies=[Depends(owner_user)])
+@router.put("/{device_id}", dependencies=[Depends(owner_user)])
 def update_device(
         device_id: int,
         device: dto.Device,

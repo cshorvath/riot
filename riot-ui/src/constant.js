@@ -52,6 +52,13 @@ export const OPERATOR = {
     }
 };
 
+export const ERRORS = {
+    401: "Hibás felhasználónév vagy jelszó",
+    404: "Nem található.",
+    422: "Hibás kérés",
+    500: "Szerverhiba"
+};
+
 export const RULE_ACTIONS = {
     SEND_EMAIL: "SEND_EMAIL",
     FORWARD: "FORWARD"

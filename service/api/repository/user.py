@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import NoResultFound
 
 import core.model as db_model
-from api.model.user import NewUser
 from api.util.auth import get_password_hash
 from api.util.exception import NotFoundException
 
@@ -30,8 +29,8 @@ def get_user_by_name(db: Session, user_name: str) -> Optional[db_model.User]:
         return None
 
 
-def create_user(db: Session, user: NewUser) -> db_model.User:
-    inserted_user = db_model.User(name=user.name, password=get_password_hash(user.password), admin=False)
+def create_user(db: Session, username: str, password: str, admin=False) -> db_model.User:
+    inserted_user = db_model.User(name=username, password=get_password_hash(password), admin=admin)
     db.add(inserted_user)
     db.commit()
     db.refresh(inserted_user)

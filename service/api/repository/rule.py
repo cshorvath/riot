@@ -28,7 +28,7 @@ def delete_rule(db: Session, rule_id: int) -> bool:
     return bool(result)
 
 
-def patch_rule(db: Session, rule_id: int, rule: PatchRule):
+def update_rule(db: Session, rule_id: int, rule: PatchRule):
     result = db.query(Rule).filter_by(id=rule_id).update(rule.dict(exclude_unset=True))
     db.commit()
     if result:

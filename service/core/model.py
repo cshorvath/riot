@@ -9,8 +9,8 @@ Base = declarative_base()
 user_device = Table(
     "user_device",
     Base.metadata,
-    Column('user_id', Integer, ForeignKey('user.id'), nullable=False),
-    Column('device_id', Integer, ForeignKey('device.id'), nullable=False)
+    Column('user_id', Integer, ForeignKey('user.id', ondelete="cascade"), nullable=False),
+    Column('device_id', Integer, ForeignKey('device.id', ondelete="cascade"), nullable=False)
 )
 
 
@@ -19,7 +19,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(40), unique=True)
-    password = Column(String(40))
+    password = Column(String(200))
     admin = Column(Boolean, default=False, nullable=False)
 
     devices = relationship("Device", secondary=user_device)
@@ -49,7 +49,7 @@ class Message(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     timestamp = Column(TIMESTAMP, index=True)
-    device_id = Column(Integer, ForeignKey("device.id"), index=True, nullable=False)
+    device_id = Column(Integer, ForeignKey("device.id", ondelete="cascade"), index=True, nullable=False)
     direction = Column(Enum(MessageDirection), nullable=False)
     payload = Column(JSON, nullable=True)
 
@@ -76,8 +76,8 @@ class Rule(Base):
     __tablename__ = "rule"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    creator_id = Column(Integer, ForeignKey("user.id"), index=True, nullable=False)
-    source_device_id = Column(Integer, ForeignKey("device.id"), index=True, nullable=False)
+    creator_id = Column(Integer, ForeignKey("user.id", ondelete="SET NULL"), index=True)
+    source_device_id = Column(Integer, ForeignKey("device.id", ondelete="cascade"), index=True, nullable=False)
     name = Column(String(100), nullable=False)
     message_field = Column(Text, nullable=False)
     operator = Column(Enum(RuleOperator), nullable=False)
@@ -85,7 +85,7 @@ class Rule(Base):
     operator_arg_2 = Column(Numeric)
     action_type = Column(Enum(ActionType), nullable=False)
     action_arg = Column(Text, nullable=False)
-    target_device_id = Column(Integer, ForeignKey("device.id"))
+    target_device_id = Column(Integer, ForeignKey("device.id", ondelete="cascade"))
 
     source_device = relationship("Device", back_populates="source_rules", foreign_keys=source_device_id)
     target_device = relationship("Device", back_populates="target_rules", foreign_keys=target_device_id)

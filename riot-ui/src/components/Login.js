@@ -6,7 +6,7 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import {getUserWithStoredToken, loginRequest} from "../actions/login";
-import {ErrorAlert, InProgressSpinner} from "./util";
+import {ErrorAlert, InProgressSpinner} from "./util/util";
 
 function handleSubmit(event, loginRequest) {
     event.preventDefault();

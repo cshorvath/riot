@@ -1,13 +1,13 @@
 import {connect} from "react-redux";
 import {addRule, hideRuleModal, updateRule} from "../actions/rules";
 import React, {useEffect, useState} from "react";
-import {OPERATOR, RULE_ACTIONS} from "../reducers/constant";
+import {OPERATOR, RULE_ACTIONS} from "../constant";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import {ErrorAlert, formatDeviceTitle} from "./util";
+import {ErrorAlert, formatDeviceTitle} from "./util/util";
 import {getDevices} from "../actions/devices";
 
 function handleSubmit(event, onSubmit) {
@@ -115,7 +115,8 @@ function RuleEditModal({deviceId, show, rule, devices, error, addRule, updateRul
                         Név
                     </Form.Label>
                     <Col md="9">
-                        <Form.Control name="name" type="text" defaultValue={editedRule.name} required="required"/>
+                        <Form.Control name="name" type="text" defaultValue={editedRule.name} required="required"
+                                      minLength={3}/>
                     </Col>
                 </Form.Group>
 
