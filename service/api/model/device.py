@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Optional
 
 from pydantic.types import constr
@@ -13,7 +12,7 @@ class Device(CommonModel):
 
 class DeviceResponse(Device):
     id: int
-    rule_count: int
+    rule_count: Optional[int]
     # last_message: datetime
 
 

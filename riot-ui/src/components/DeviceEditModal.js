@@ -8,6 +8,13 @@ import {InProgressSpinner} from "./util";
 import {connect} from "react-redux";
 import {addDevice, hideDeviceModal, updateDevice} from "../actions/devices";
 
+function handleSubmit(event, onSubmit) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    const device = {name: data.get("name"), description: data.get("description")};
+    if (device.name.trim())
+        onSubmit(device)
+}
 
 function DeviceEditModal({show, device, inProgress, addDevice, updateDevice, hideDeviceModal}) {
 
@@ -20,14 +27,6 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice, hid
 
     const title = device ? "Eszköz szerkesztése" : "Eszköz hozzáadása";
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        const data = new FormData(event.target);
-        const device = {name: data.get("name"), description: data.get("description")};
-        if (device.name.trim())
-            onSubmit(device)
-    }
-
     return <Modal
         show={show}
         onHide={hideDeviceModal}
@@ -38,14 +37,14 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice, hid
                 {title}
             </Modal.Title>
         </Modal.Header>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={e => handleSubmit(e, onSubmit)}>
             <Modal.Body>
                 <Form.Group as={Row} controlId="name">
                     <Form.Label column md="3">
                         Név
                     </Form.Label>
                     <Col md="9">
-                        <Form.Control name="name" type="text" defaultValue={name}/>
+                        <Form.Control name="name" type="text" defaultValue={name} required="required"/>
                     </Col>
                 </Form.Group>
 
@@ -54,7 +53,7 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice, hid
                         Megjegyzés
                     </Form.Label>
                     <Col md="9">
-                        <Form.Control name="description" type="text" defaultValue={description}/>
+                        <Form.Control name="description" type="text" defaultValue={description} required="required"/>
                     </Col>
                 </Form.Group>
             </Modal.Body>

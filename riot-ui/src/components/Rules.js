@@ -1,11 +1,14 @@
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Button from "react-bootstrap/Button";
 import React, {useEffect} from "react";
-import {deleteRule, getRules, showAddRuleModal, showEditRuleModal} from "../actions/rules";
-import {conditionFormatter, ErrorAlert, formatDeviceTitle, InProgressSpinner} from "./util";
+import {deleteRule, getRules, rulesReset, showAddRuleModal, showEditRuleModal} from "../actions/rules";
+import {conditionFormatter, ErrorAlert, formatDeviceTitle, InProgressSpinner, RuleAction} from "./util";
 import Table from "react-bootstrap/Table";
+import {AddButton, DeleteButton, EditButton, RefreshButton} from "./buttons";
+import RuleEditModal from "./RuleEditModal";
+import {faCogs} from "@fortawesome/free-solid-svg-icons/faCogs";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 function RuleRow({deviceId, rule, deleteRule, showEditRuleModal}) {
 
@@ -19,12 +22,13 @@ function RuleRow({deviceId, rule, deleteRule, showEditRuleModal}) {
         <td>{rule.name}</td>
         <td>{rule.creator.name}</td>
         <td>{conditionFormatter(rule.operator, rule.message_field, rule.operator_arg_1, rule.operator_arg_2)}</td>
-        <td>{conditionFormatter(rule.operator, rule.message_field, rule.operator_arg_1, rule.operator_arg_2)}</td>
+        <td>
+            <RuleAction actionArg={rule.action_arg} actionType={rule.action_type} targetDevice={rule.target_device}/>
+        </td>
         <td>
             <ButtonGroup>
-                <Button size="sm" variant="outline-secondary"
-                        onClick={() => showEditRuleModal(rule)}>Szerkesztés</Button>
-                <Button size="sm" variant="outline-danger" onClick={confirmDelete}>Törlés</Button>
+                <EditButton onClick={() => showEditRuleModal(deviceId, rule)}/>
+                <DeleteButton onClick={confirmDelete}/>
             </ButtonGroup>
         </td>
     </tr>
@@ -44,7 +48,7 @@ function RulesList({deviceId, rules, error, isLoading}) {
         </>;
     return <>
         {error && <ErrorAlert error={error.message}/>}
-        <Table hover bordered className="data-table">
+        <Table size={"sm"} hover bordered className="data-table">
             <thead>
             <tr>
                 <th>Id</th>
@@ -69,16 +73,19 @@ const ConnectedRulesList = connect(state =>
         isLoading: state.rules.isLoading
     }))(RulesList);
 
-function Rules({match, device, getRules, showAddRuleModal}) {
+function Rules({match, device, getRules, rulesReset, showAddRuleModal}) {
     const deviceId = match.params.deviceId;
-    useEffect(() => getRules(deviceId), [deviceId, getRules]);
+    useEffect(() => {
+        getRules(deviceId);
+        return rulesReset
+    }, [deviceId, getRules]);
     return <>
-        {/*<DeviceEditModal/>*/}
-        <h1>Szabályok - {formatDeviceTitle(device)}</h1>
+        <RuleEditModal deviceId={deviceId}/>
+        <h1><FontAwesomeIcon icon={faCogs}/> Szabályok - {formatDeviceTitle(device)}</h1>
         <div className="d-flex">
             <ButtonGroup className="mb-3 ml-auto">
-                <Button variant="success" onClick={showAddRuleModal}>Hozzáadás</Button>
-                <Button variant="primary" onClick={() => getRules(deviceId)}>Frissítés</Button>
+                <AddButton onClick={showAddRuleModal}/>
+                <RefreshButton onClick={() => getRules(deviceId)}/>
             </ButtonGroup>
         </div>
         <ConnectedRulesList deviceId={device.id}/>
@@ -86,4 +93,4 @@ function Rules({match, device, getRules, showAddRuleModal}) {
 }
 
 export default withRouter(
-    connect(state => ({device: state.rules.device || {}}), {getRules, showAddRuleModal})(Rules));
+    connect(state => ({device: state.rules.device || {}}), {getRules, rulesReset, showAddRuleModal})(Rules));

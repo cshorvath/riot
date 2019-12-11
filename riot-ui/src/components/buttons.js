@@ -9,6 +9,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import {faInbox} from "@fortawesome/free-solid-svg-icons/faInbox";
 import {faCogs} from "@fortawesome/free-solid-svg-icons/faCogs";
+import {InProgressSpinner} from "./util";
 
 
 export function ToolTipButton(props) {
@@ -54,12 +55,17 @@ export function DeleteButton(props) {
 export function AddButton(props) {
     return <ToolTipButton
         tooltip="Hozzáadás"
-        variant="outline-success" {...props}><FontAwesomeIcon icon={faPlus}/></ToolTipButton>
+        variant="success" {...props}><FontAwesomeIcon icon={faPlus}/></ToolTipButton>
 }
 
 export function RefreshButton(props) {
     return <ToolTipButton
         tooltip="Frissítés"
-        variant="primary" {...props}><FontAwesomeIcon icon={faSync}/></ToolTipButton>
+        variant="primary" {...props}>
+        {props.isLoading ?
+            <InProgressSpinner/> :
+            <FontAwesomeIcon icon={faSync}/>
+        }
+    </ToolTipButton>
 
 }

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
-import {getMessages} from "../actions/messages";
+import {getMessages, messagesReset} from "../actions/messages";
 import Pagination from "react-bootstrap/Pagination";
 import {ErrorAlert, formatDeviceTitle, InProgressSpinner} from "./util";
 import Table from "react-bootstrap/Table";
@@ -77,7 +77,7 @@ function MessageTable({isLoading, items, recordKeys}) {
 function MessagesBody({isLoading, items, recordCount, page, pageCount, error, setPage}) {
     const [tab, setTab] = useState("table");
     if (error)
-        return <ErrorAlert error={error.detail}/>
+        return <ErrorAlert error={error.detail}/>;
     if (!items.length && !isLoading)
         return <div className="d-flex">
             <h2 className="text-secondary mx-auto">Nincsenek üzenetek</h2>
@@ -98,10 +98,13 @@ function MessagesBody({isLoading, items, recordCount, page, pageCount, error, se
     </>
 }
 
-function Messages({match, isLoading, device, items = [], pageCount, recordCount, error, getMessages}) {
+function Messages({match, isLoading, device, items = [], pageCount, recordCount, error, getMessages, messagesReset}) {
     const {deviceId} = match.params;
     const [page, setPage] = useState(1);
-    useEffect(() => getMessages(deviceId, page), [page, deviceId, getMessages]);
+    useEffect(() => {
+        getMessages(deviceId, page);
+        return messagesReset
+    }, [page, deviceId, getMessages]);
     return <>
         <div className={"d-flex justify-content-between"}>
             <h1><FontAwesomeIcon icon={faInbox}/> Üzenetek - {formatDeviceTitle(device)}</h1>
@@ -119,4 +122,4 @@ function Messages({match, isLoading, device, items = [], pageCount, recordCount,
     </>
 }
 
-export default withRouter(connect(state => state.messages, {getMessages})(Messages));
+export default withRouter(connect(state => state.messages, {getMessages, messagesReset})(Messages));

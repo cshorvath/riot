@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic.types import constr
 
 from api.model.common import CommonModel
-from api.model.device import Device
+from api.model.device import DeviceResponse
 from api.model.user import User
 from core.model import RuleOperator, ActionType
 
@@ -11,7 +11,7 @@ from core.model import RuleOperator, ActionType
 class RuleResponse(CommonModel):
     id: int
     name: constr(strip_whitespace=True, min_length=2, max_length=25)
-    target_device: Optional[Device]
+    target_device: Optional[DeviceResponse]
     creator: User
     message_field: str
     action_type: ActionType

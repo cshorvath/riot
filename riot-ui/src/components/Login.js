@@ -28,7 +28,7 @@ function Login({inProgress, error, loginRequest, getUserWithStoredToken}) {
                             Felhasználónév
                         </Form.Label>
                         <Col md="9">
-                            <Form.Control name="user" type="text"/>
+                            <Form.Control name="user" type="text" required="required"/>
                         </Col>
                     </Form.Group>
 
@@ -37,7 +37,7 @@ function Login({inProgress, error, loginRequest, getUserWithStoredToken}) {
                             Jelszó
                         </Form.Label>
                         <Col md="9">
-                            <Form.Control name="password" type="password"/>
+                            <Form.Control name="password" type="password" required="required"/>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="justify-content-md-center">

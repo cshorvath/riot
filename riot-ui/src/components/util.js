@@ -1,7 +1,10 @@
 import Alert from "react-bootstrap/Alert";
 import React from "react";
 import Spinner from "react-bootstrap/Spinner";
-import {conditionFormat, RULE_ACTIONS} from "../reducers/constant";
+import {OPERATOR, RULE_ACTIONS} from "../reducers/constant";
+import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faForward} from "@fortawesome/free-solid-svg-icons/faForward";
 
 export function ErrorAlert({error}) {
     if (error)
@@ -31,16 +34,19 @@ export function formatDeviceTitle(device) {
 }
 
 export function conditionFormatter(operator, field, arg1, arg2) {
-    const formatter = conditionFormat[operator];
-    if (!formatter) return "N/A";
-    return formatter(field, arg1, arg2);
+    const op = OPERATOR[operator];
+    if (!op) return "N/A";
+    return op.formatter(field, arg1, arg2);
 }
 
-export function actionFormatter(actionType, targetDevice, actionArg) {
+export function RuleAction({actionType, targetDevice, actionArg}) {
     switch (actionType) {
         case RULE_ACTIONS.SEND_EMAIL:
-            return
-
+            return <><FontAwesomeIcon icon={faEnvelope}/> {actionArg}</>;
+        case RULE_ACTIONS.FORWARD:
+            return <><FontAwesomeIcon icon={faForward}/> {formatDeviceTitle(targetDevice)}</>;
+        default:
+            return <>"N/A"</>
     }
 
 }

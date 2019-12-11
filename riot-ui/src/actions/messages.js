@@ -1,6 +1,7 @@
 import APIClient from "../services/APIClient";
 import {MESSAGES_PER_PAGE} from "../reducers/constant";
 
+export const MESSAGES_RESET = "MESSAGES_RESET";
 export const MESSAGES_LOADING = "MESSAGES_LOADING";
 export const MESSAGES_LOADED = "MESSAGES_LOADED";
 export const MESSAGES_ERROR = "MESSAGES_ERROR";
@@ -9,6 +10,12 @@ function messagesLoading(page) {
     return {
         type: MESSAGES_LOADING,
         page
+    }
+}
+
+export function messagesReset() {
+    return {
+        type: MESSAGES_RESET,
     }
 }
 

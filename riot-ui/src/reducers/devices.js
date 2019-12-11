@@ -7,7 +7,7 @@ import {
     SHOW_EDIT_DEVICE_MODAL
 } from "../actions/devices";
 
-const initialState = {modal: {}};
+const initialState = {devices: [], modal: {}};
 
 export default function (state = initialState, action) {
     switch (action.type) {

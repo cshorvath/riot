@@ -22,7 +22,6 @@ function DeviceRow({device, deleteDevice, showEditDeviceModal}) {
         <td>{device.id}</td>
         <td>{device.name}</td>
         <td>{device.description}</td>
-        <td>{device.last_message || "N/A"}</td>
         <td>
             <ButtonGroup>
                 <LinkContainer to={`/device/${device.id}/message`}><MessagesButton/></LinkContainer>
@@ -44,17 +43,15 @@ function DevicesList({devices, error, isLoading}) {
         <Table size={"sm"} hover bordered className="data-table">
             <colgroup>
                 <col style={{"width": "5%"}}/>
-                <col style={{"width": "10%"}}/>
-                <col style={{"width": "30%"}}/>
-                <col style={{"width": "15%"}}/>
-                <col style={{"width": "30%"}}/>
+                <col style={{"width": "20%"}}/>
+                <col/>
+                <col style={{"width": "20%"}}/>
             </colgroup>
             <thead>
             <tr>
                 <th>Id</th>
                 <th>Név</th>
                 <th>Megjegyzés</th>
-                <th>Utolsó üzenet</th>
                 <th>Műveletek</th>
             </tr>
             </thead>
