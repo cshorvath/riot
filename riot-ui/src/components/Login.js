@@ -21,7 +21,7 @@ function Login({inProgress, error, loginRequest, getUserWithStoredToken}) {
         <Card className="login-card mx-auto">
             <Card.Header>Bejelentkezés</Card.Header>
             <Card.Body>
-                <ErrorAlert error={error}/>
+                {error && <ErrorAlert error={error.detail}/>}
                 <Form onSubmit={event => handleSubmit(event, loginRequest)}>
                     <Form.Group as={Row} controlId="formPlaintextEmail">
                         <Form.Label column md="3">

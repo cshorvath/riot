@@ -7,7 +7,6 @@ class APIError extends Error {
         super(`${status}: ${detail}`);
         this.status = status;
         this.detail = detail;
-        console.log(status)
     }
 }
 
@@ -100,7 +99,6 @@ class APIClient {
                 }
             });
         } catch (e) {
-            console.log(JSON.stringify(e));
             throw new APIError(APIClient._formatMessage(e.response), e.response.status)
         }
     }

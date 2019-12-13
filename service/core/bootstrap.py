@@ -4,12 +4,16 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-
-# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+from core.model import Base
 
 
 def get_db_engine(host, user, password, db, port=3306):
-    return create_engine(f"mysql+mysqldb://{user}:{password}@{host}:{port}/{db}?charset=utf8", convert_unicode=True)
+    return create_engine(f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}?charset=utf8",
+                         convert_unicode=True)
+
+
+def migrate(engine):
+    Base.metadata.create_all(engine)
 
 
 @contextmanager

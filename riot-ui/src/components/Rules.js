@@ -93,7 +93,7 @@ function Rules({match, device, getRules, rulesReset, showAddRuleModal}) {
     useEffect(() => {
         getRules(deviceId);
         return rulesReset
-    }, [deviceId, getRules]);
+    }, [deviceId, getRules, rulesReset]);
     return <>
         <RuleEditModal deviceId={deviceId}/>
         <h1><FontAwesomeIcon icon={faCogs}/> Szabályok - {formatDeviceTitle(device)}</h1>

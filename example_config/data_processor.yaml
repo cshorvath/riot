@@ -1,0 +1,25 @@
+db:
+  host: 127.0.0.1
+  port: 3306
+  user: riot
+  password: riot
+  database: riot
+mqtt:
+  host: 127.0.0.1
+  port: 1883
+  client_id: riot_data_processor_1
+  topic_name_prefix: riot
+  qos: 1
+email:
+  #      implementation: dummy
+  implementation: smtp
+  arguments:
+    host:
+    port:
+    user:
+    password:
+    from_address:
+    from_name:
+    use_ssl:
+timezone: Europe/Budapest
+

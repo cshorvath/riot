@@ -3,7 +3,7 @@ import sys
 
 import pytz
 
-from core.bootstrap import get_db_engine, get_db_session
+from core.bootstrap import get_db_engine, get_db_session, migrate
 from core.model import ActionType
 from core.util import parse_config_from_env, MissingConfigKeyException, ConfigNode
 from data_processor.db.db_persister import DBPersister
@@ -29,6 +29,8 @@ def main():
         password=config.db.password,
         db=config.db.database
     )
+
+    migrate(db_engine)
 
     email_service: ActionHandler = email_service_factory(
         config.email.implementation,

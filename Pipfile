@@ -9,9 +9,9 @@ verify_ssl = true
 pyyaml = "*"
 paho-mqtt = "*"
 sqlalchemy = "*"
-mysqlclient = "*"
+mysql-connector-python = "*"
 pytz = "*"
-fastapi = {extras = ["all"],version = "*"}
+fastapi = {version = "*"}
 uvicorn = "*"
 python-multipart = "*"
 passlib = {extras = ["bcrypt"],version = "*"}

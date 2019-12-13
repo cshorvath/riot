@@ -104,7 +104,7 @@ function Messages({match, isLoading, device, items = [], pageCount, recordCount,
     useEffect(() => {
         getMessages(deviceId, page);
         return messagesReset
-    }, [page, deviceId, getMessages]);
+    }, [page, deviceId, getMessages, messagesReset]);
     return <>
         <div className={"d-flex justify-content-between"}>
             <h1><FontAwesomeIcon icon={faInbox}/> Üzenetek - {formatDeviceTitle(device)}</h1>

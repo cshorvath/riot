@@ -1,5 +1,6 @@
 import APIClient from "../services/APIClient";
 
+export const LOGIN_INIT = "LOGIN_INIT";
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_ERROR = "LOGIN_ERROR";
@@ -15,7 +16,13 @@ function loginSuccess(user) {
 function loginError(error) {
     return {
         type: LOGIN_ERROR,
-        error: error.state === 401 ? "Hibás felhasználónév vagy jelszó." : "Hálózati hiba"
+        error
+    }
+}
+
+function loginInit(error) {
+    return {
+        type: LOGIN_INIT,
     }
 }
 
@@ -34,7 +41,7 @@ export function getUserWithStoredToken() {
             APIClient.getCurrentUser()
                 .then(
                     user => dispatch(loginSuccess(user)),
-                    e => dispatch(loginError(e))
+                    () => dispatch(loginInit())
                 );
         });
     }

@@ -1,7 +1,9 @@
-import {LOGIN_ERROR, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT} from "../actions/login";
+import {LOGIN_ERROR, LOGIN_INIT, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT} from "../actions/login";
 
 export default function (state={}, action) {
     switch (action.type) {
+        case LOGIN_INIT:
+            return {inProgress: false};
         case LOGIN_REQUEST:
             return {inProgress: true};
         case LOGIN_SUCCESS:
