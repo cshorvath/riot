@@ -81,7 +81,7 @@ class Rule(Base):
     name = Column(String(100), nullable=False)
     message_field = Column(Text, nullable=False)
     operator = Column(Enum(RuleOperator), nullable=False)
-    operator_arg_1 = Column(Numeric, nullable=False)
+    operator_arg_1 = Column(Numeric)
     operator_arg_2 = Column(Numeric)
     action_type = Column(Enum(ActionType), nullable=False)
     action_arg = Column(Text, nullable=False)

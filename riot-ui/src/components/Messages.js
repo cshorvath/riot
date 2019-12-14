@@ -9,7 +9,7 @@ import Chart from "./Chart";
 import {MESSAGES_PER_PAGE} from "../constant";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import {RefreshButton} from "./util//buttons";
+import {RefreshButton} from "./util/buttons";
 import {faChartLine} from "@fortawesome/free-solid-svg-icons/faChartLine";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faTable} from "@fortawesome/free-solid-svg-icons/faTable";
@@ -49,7 +49,6 @@ function Paginator({recordCount, page, pageCount, setPage}) {
 function MessageRow({item, recordKeys}) {
     return <tr>
         <td>{item.timestamp}</td>
-        <td>{item.direction}</td>
         {recordKeys.map(k => <td key={`message_${item.id}_${k}`}>{item.payload[k]}</td>)}
     </tr>
 }
@@ -63,7 +62,6 @@ function MessageTable({isLoading, items, recordKeys}) {
             <thead>
             <tr>
                 <th>Időpont</th>
-                <th>Irány</th>
                 {recordKeys.map(k => <th key={k}>{k}</th>)}
             </tr>
             </thead>

@@ -16,7 +16,7 @@ function UserMenu({user, logout}) {
     return <Dropdown alignRight as={NavItem}>
         <Dropdown.Toggle as={Nav.Link}><FontAwesomeIcon icon={faUser}/> {user.name} {user.admin ? "(admin)" : ""}</Dropdown.Toggle>
         <Dropdown.Menu>
-            <Dropdown.Item onClick={logout}><FontAwesomeIcon icon={faSignOutAlt}/> Logout</Dropdown.Item>
+            <Dropdown.Item onClick={logout}><FontAwesomeIcon icon={faSignOutAlt}/> Kijelentkezés</Dropdown.Item>
         </Dropdown.Menu>
     </Dropdown>;
 }

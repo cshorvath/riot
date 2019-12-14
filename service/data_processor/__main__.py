@@ -34,7 +34,7 @@ def main():
 
     email_service: ActionHandler = email_service_factory(
         config.email.implementation,
-        config.email.get("arguments", None)
+        config.email.get_optional("arguments")
     )
 
     with get_db_session(db_engine) as db_session:

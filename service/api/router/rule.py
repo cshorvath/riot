@@ -6,8 +6,9 @@ from starlette.status import HTTP_404_NOT_FOUND
 
 import api.repository.rule as rule_repository
 from api.bootstrap import get_db
-from api.model.rule import NewRule, RuleResponse, PatchRule
+from api.model.rule import RuleRequest, RuleResponse
 from api.util.auth import owner_user, get_current_user
+from api.util.validation import validate_rule
 from core.model import User
 
 router = APIRouter()
@@ -32,19 +33,21 @@ def get_rules_for_user(
 @router.post("/device/{device_id}/rule")
 def add_rule_for_device(
         device_id: int,
-        rule: NewRule,
+        rule: RuleRequest,
         user: User = Depends(owner_user),
         db: Session = Depends(get_db)
 ):
+    validate_rule(rule)
     return rule_repository.insert_rule(db, device_id, rule, user)
 
 
 @router.put("/device/{device_id}/rule/{rule_id}", dependencies=[Depends(owner_user)], response_model=RuleResponse)
 def update_rule(
         rule_id: int,
-        rule: PatchRule,
+        rule: RuleRequest,
         db: Session = Depends(get_db)
 ):
+    validate_rule(rule)
     rule = rule_repository.update_rule(db, rule_id, rule)
     if not rule:
         raise HTTPException(

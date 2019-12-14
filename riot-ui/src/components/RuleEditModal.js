@@ -89,9 +89,14 @@ function actionArgInputs(actionType, editedRule, devices) {
 
 function RuleEditModal({deviceId, show, rule, devices, error, addRule, updateRule, hideRuleModal, getDevices}) {
     useEffect(getDevices, []);
-    const [actionType, setActionType] = useState(RULE_ACTIONS.SEND_EMAIL);
     const editedRule = rule || {};
-    const [operator, setOperator] = useState(editedRule.operator ? OPERATOR[editedRule.operator] : OPERATOR["LT"]);
+    const [actionType, setActionType] = useState(RULE_ACTIONS.SEND_EMAIL);
+    const [operator, setOperator] = useState(OPERATOR["LT"]);
+    useEffect(() => {
+        console.log(rule);
+        setActionType(rule ? rule.action_type : RULE_ACTIONS.SEND_EMAIL);
+        setOperator(rule ? OPERATOR[rule.operator] : OPERATOR["LT"]);
+    }, [rule]);
     const onSubmit = rule ?
         data => updateRule(deviceId, rule.id, data)
         : data => addRule(deviceId, data);
@@ -147,7 +152,7 @@ function RuleEditModal({deviceId, show, rule, devices, error, addRule, updateRul
                 {operatorArgInputs(operator, editedRule)}
                 <Form.Group as={Row} controlId="action_type">
                     <Form.Label column md="3">
-                        Operátor
+                        Akció
                     </Form.Label>
                     <Col md="9">
                         <Form.Control as="select" name="action_type" defaultValue={editedRule.action_type}

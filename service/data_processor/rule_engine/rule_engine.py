@@ -34,7 +34,7 @@ operator_mapping: Dict[RuleOperator, RuleCondition] = {
     RuleOperator.BETWEEN:
         RuleCondition("{arg1} <= {x} <= {arg2}", lambda x, arg1, arg2: x <= arg1 and x <= arg2),
     RuleOperator.ANY:
-        RuleCondition("Value present {x}", lambda x, arg1, arg2: True)
+        RuleCondition("Value present {x}", lambda x, arg1, arg2: bool(x))
 }
 
 
@@ -56,8 +56,9 @@ class RuleEngine(DeviceMessageListener):
                 logging.error(f"Unable to evaluate operator in Rule[{rule}]")
                 continue
             try:
-                result, rule_message = condition.eval(
-                    x=message.payload[rule.message_field],
+                value = message.payload.get(rule.message_field, None)
+                result, rule_message = value is not None and condition.eval(
+                    x=value,
                     arg1=rule.operator_arg_1,
                     arg2=rule.operator_arg_2
                 )
@@ -67,8 +68,5 @@ class RuleEngine(DeviceMessageListener):
                         logging.error(f"Missing action handler for type {rule.action_type}, rule[{rule.id}]")
                         continue
                     action_handler.run_action(message, rule, rule_message)
-            except KeyError:
-                logging.error(f"Unable to find key {rule.message_field} in payload. Device[{message.device_id}],"
-                              f" timestamp[{message.timestamp}] payload[{message.payload}]")
             except ActionException as ex:
                 logging.exception(ex)

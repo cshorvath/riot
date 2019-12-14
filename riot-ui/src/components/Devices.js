@@ -39,7 +39,7 @@ function DevicesList({devices, error, isLoading}) {
     if (isLoading || !devices)
         return <InProgressSpinner/>;
     return <>
-        {error && <ErrorAlert error={error.message}/>}
+        {error && <ErrorAlert error={error.detail}/>}
         <Table size={"sm"} hover bordered className="data-table">
             <colgroup>
                 <col style={{"width": "5%"}}/>

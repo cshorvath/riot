@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from api.model.rule import NewRule, PatchRule
+from api.model.rule import RuleRequest
 from core.model import Rule, Device, User
 
 
@@ -14,7 +14,7 @@ def get_rules_for_user(db: Session, user: User):
     return db.query(Rule).join(Rule.source_device).join(Device.owners).filter(User.id == user.id).all()
 
 
-def insert_rule(db: Session, device_id: int, rule: NewRule, user: User) -> Rule:
+def insert_rule(db: Session, device_id: int, rule: RuleRequest, user: User) -> Rule:
     db_rule = Rule(creator_id=user.id, source_device_id=device_id, **rule.dict())
     db.add(db_rule)
     db.commit()
@@ -28,7 +28,7 @@ def delete_rule(db: Session, rule_id: int) -> bool:
     return bool(result)
 
 
-def update_rule(db: Session, rule_id: int, rule: PatchRule):
+def update_rule(db: Session, rule_id: int, rule: RuleRequest):
     result = db.query(Rule).filter_by(id=rule_id).update(rule.dict(exclude_unset=True))
     db.commit()
     if result:

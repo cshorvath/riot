@@ -50,7 +50,7 @@ export const OPERATOR = {
         id: "ANY",
         displayName: "BÁRMI",
         argCount: 0,
-        formatter: (field) => `!!${field}}`
+        formatter: (field) => `${field}?`
     }
 };
 

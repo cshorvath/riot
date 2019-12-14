@@ -53,7 +53,7 @@ function DeviceEditModal({show, device, inProgress, addDevice, updateDevice, hid
                         Megjegyzés
                     </Form.Label>
                     <Col md="9">
-                        <Form.Control name="description" type="text" defaultValue={description} required="required"/>
+                        <Form.Control name="description" type="text" defaultValue={description}/>
                     </Col>
                 </Form.Group>
             </Modal.Body>

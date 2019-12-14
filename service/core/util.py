@@ -24,6 +24,9 @@ class ConfigNode(Mapping):
         except KeyError:
             raise MissingConfigKeyException(*self._path, k)
 
+    def get_optional(self, k):
+        return self._d.get(k, ConfigNode({}))
+
     def __getattr__(self, item):
         return self[item]
 
