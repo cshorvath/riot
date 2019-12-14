@@ -1,5 +1,5 @@
 import axios from "axios";
-import {ERRORS} from "../constant";
+import {API_URL, ERRORS} from "../constant";
 
 
 class APIError extends Error {
@@ -99,9 +99,9 @@ class APIClient {
                 }
             });
         } catch (e) {
-            throw new APIError(APIClient._formatMessage(e.response), e.response.status)
+            throw new APIError(APIClient._formatMessage(e.response), e.response ? e.response.status : null)
         }
     }
 }
 
-export default new APIClient("http://localhost:8000");
+export default new APIClient(API_URL);

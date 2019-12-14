@@ -10,7 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY ./service/core ./core
 COPY ./service/api ./api
-COPY example_config/api.yaml .
+COPY example_config/api.yaml ./config.yaml
 
-ENV RIOT_API_CONFIG_FILE api.yaml
+ENV RIOT_API_CONFIG_FILE config.yaml
 ENTRYPOINT  ["python3", "-m", "api"]

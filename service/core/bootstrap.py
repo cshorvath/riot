@@ -26,4 +26,4 @@ def get_db_session(engine):
         yield session
     finally:
         session.close()
-        logging.info("Database session closed")
+        logging.debug("Database session closed")

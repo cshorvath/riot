@@ -9,7 +9,7 @@ RUN pip install -r requirements.txt
 
 COPY ./service/core ./core
 COPY ./service/data_processor ./data_processor
-COPY example_config/data_processor.yaml .
+COPY example_config/data_processor.yaml ./config.yaml
 
-ENV RIOT_DATA_PROCESSOR_CONFIG data_processor.yaml
+ENV RIOT_DATA_PROCESSOR_CONFIG config.yaml
 CMD ["python3", "-m", "data_processor"]

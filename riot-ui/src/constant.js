@@ -1,3 +1,5 @@
+export const API_URL = process.env.REACT_APP_RIOT_API_URL || "http://localhost:8000";
+
 export const MESSAGES_PER_PAGE = 50;
 
 

@@ -11,7 +11,7 @@ from api.cli import create_user_cli
 from api.router import user, device, auth, rule, message
 from core.bootstrap import migrate
 
-logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message)s", level=logging.DEBUG)
+logging.basicConfig(format="%(asctime)s - %(module)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='rIOT api cli.')

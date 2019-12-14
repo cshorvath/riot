@@ -23,7 +23,6 @@ class MQTTClientWrapper:
     ) -> None:
         self._qos = qos
         self._mqtt_client = mqtt.Client(client_id)
-        self._mqtt_client.enable_logger()
         self._mqtt_client.on_connect = self._get_on_connect_cb(topics, qos)
         self._mqtt_client.on_disconnect = lambda client, userdata, rc: self._on_disconnect(rc)
         self._mqtt_client.on_message = lambda client, userdata, message: self._on_message(message)

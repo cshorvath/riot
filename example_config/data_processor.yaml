@@ -11,15 +11,15 @@ mqtt:
   topic_name_prefix: riot
   qos: 1
 email:
-  #      implementation: dummy
-  implementation: smtp
-  arguments:
-    host:
-    port:
-    user:
-    password:
-    from_address:
-    from_name:
-    use_ssl:
+  implementation: dummy
+#  implementation: smtp
+#  arguments:
+#    host:
+#    port:
+#    user:
+#    password:
+#    from_address:
+#    from_name:
+#    use_ssl:
 timezone: Europe/Budapest
 
