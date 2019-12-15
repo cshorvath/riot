@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import smtplib
 from abc import ABC, abstractmethod
@@ -11,7 +10,7 @@ from data_processor.mqtt.data_observer import DeviceMessage
 from data_processor.rule_engine.action.action import ActionException, ActionHandler
 
 
-class EmailService(ActionHandler, ABC):
+class AbstractEmailService(ActionHandler, ABC):
 
     def run_action(self, message: DeviceMessage, rule: Rule, rule_message: str):
         self._send_mail(
@@ -28,13 +27,13 @@ class EmailService(ActionHandler, ABC):
         pass
 
 
-class DummyEmailService(EmailService):
+class DummyEmailService(AbstractEmailService):
 
     def _send_mail(self, recipients: List[str], subject: str, body: str):
         logging.info(f"DUMMY mail sent: target[{recipients}], subject[{subject}], body[f{body}]")
 
 
-class SMTPEmailService(EmailService):
+class SMTPEmailService(AbstractEmailService):
 
     def __init__(self,
                  smtp_host: str,
@@ -50,7 +49,6 @@ class SMTPEmailService(EmailService):
         self._password = password
         self._from = from_name, from_address
         self._smtp_class: Type[smtplib.SMTP] = smtplib.SMTP_SSL if use_ssl else smtplib.SMTP_SSL
-        self._mail_queue = asyncio.Queue()
 
     def _send_mail(self, recipients: List[str], subject: str, body: str):
         try:
@@ -76,7 +74,7 @@ class SMTPEmailService(EmailService):
         return msg
 
 
-def email_service_factory(impl: str, config: dict) -> EmailService:
+def email_service_factory(impl: str, config: dict) -> AbstractEmailService:
     if impl == "dummy":
         return DummyEmailService()
     if impl == "smtp":

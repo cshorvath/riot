@@ -1,7 +1,7 @@
 import json
 import logging
 from abc import ABC, abstractmethod
-from typing import Iterable, Callable
+from typing import Iterable, Callable, Set
 
 import paho.mqtt.client as mqtt
 
@@ -28,17 +28,17 @@ class MQTTClientWrapper:
         self._mqtt_client.on_message = lambda client, userdata, message: self._on_message(message)
         self._mqtt_client.on_publish = lambda client, userdata, mid: self._on_publish(mid)
         self._mqtt_client.connect(mqtt_broker_host, mqtt_broker_port)
-        self._subscribers = set()
+        self._subscribers: Set[MQTTSubscriber] = set()
         self._publish_callbacks = {}
 
     def start(self):
-        return self._mqtt_client.loop_forever()
+        return self._mqtt_client.loop_forever(retry_first_connection=True)
 
     def stop(self):
         logging.info(f"{self} stop called")
         self._mqtt_client.disconnect()
 
-    def publish(self, topic, payload, qos=None, cb: Callable[[], None] = None):
+    def publish(self, topic: str, payload: str, qos=None, cb: Callable[[], None] = None):
         if qos is None:
             qos = self._qos
         logging.debug(f"Publish message to topic[{topic}]")
@@ -46,7 +46,7 @@ class MQTTClientWrapper:
         if cb:
             self._publish_callbacks[msg_info.mid] = cb
 
-    def publish_json(self, topic, payload, qos=None, cb: Callable[[], None] = None):
+    def publish_json(self, topic: str, payload: dict, qos: int = None, cb: Callable[[], None] = None):
         self.publish(topic, json.dumps(payload), qos, cb)
 
     def add_subscriber(self, subscriber: MQTTSubscriber):

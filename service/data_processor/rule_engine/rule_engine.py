@@ -44,9 +44,6 @@ class RuleEngine(DeviceMessageListener):
         self._db_persister = db_persister
         self._action_handlers: Dict[ActionType, ActionHandler] = {}
 
-    def register_action_handler(self, action_type: ActionType, handler: ActionHandler):
-        self._action_handlers[action_type] = handler
-
     def on_device_message(self, message: DeviceMessage):
         rules: List[Rule] = self._db_persister.get_rules_for_device(message.device_id)
         for rule in rules:
@@ -70,3 +67,6 @@ class RuleEngine(DeviceMessageListener):
                     action_handler.run_action(message, rule, rule_message)
             except ActionException as ex:
                 logging.exception(ex)
+
+    def register_action_handler(self, action_type: ActionType, handler: ActionHandler):
+        self._action_handlers[action_type] = handler

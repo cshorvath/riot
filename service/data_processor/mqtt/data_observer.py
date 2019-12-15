@@ -50,7 +50,7 @@ class DataObserver(MQTTSubscriber):
                 f"Error decoding message from topic [{topic}], payload: [{payload}], error[{e}]", )
             return
 
-        timestamp_millis: int = msg_dict.get("timestamp", 0)
+        timestamp_millis: int = msg_dict.get("timestamp", None)
         payload: dict = msg_dict.get("payload", None)
         for message_listener in self._message_listeners:
             try:
@@ -58,7 +58,7 @@ class DataObserver(MQTTSubscriber):
                     message=DeviceMessage(
                         device_id=device_id,
                         timestamp=epochmillis_to_datetime(timestamp_millis, self._tz)
-                        if timestamp_millis else datetime.now(tz=self._tz),
+                        if timestamp_millis is not None else datetime.now(tz=self._tz),
                         payload=payload
                     ),
                 )

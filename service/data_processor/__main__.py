@@ -7,6 +7,7 @@ from core.bootstrap import get_db_engine, get_db_session, migrate
 from core.model import ActionType
 from core.util import parse_config_from_env, MissingConfigKeyException, ConfigNode
 from data_processor.db.db_persister import DBPersister
+from data_processor.db.message_insert_listener import MessageInsertListener
 from data_processor.mqtt.data_observer import DataObserver
 from data_processor.mqtt.mqtt_wrapper import MQTTClientWrapper
 from data_processor.rule_engine.action.action import ActionHandler
@@ -50,13 +51,13 @@ def main():
             qos=qos
         )
         db_persister = DBPersister(db_session)
+        message_insert_listener = MessageInsertListener(db_persister)
 
         message_forwarder: ActionHandler = MessageForwarder(
             mqtt_wrapper=mqtt_client,
             db_persister=db_persister,
             prefix=topic_prefix,
-            qos=qos,
-            tz=timezone
+            qos=qos
         )
 
         rule_engine = RuleEngine(db_persister)
@@ -65,7 +66,7 @@ def main():
 
         data_observer = DataObserver(tz=timezone)
 
-        data_observer.add_listener(db_persister)
+        data_observer.add_listener(message_insert_listener)
         data_observer.add_listener(rule_engine)
 
         mqtt_client.add_subscriber(data_observer)

@@ -22,7 +22,7 @@ def get_all_users(db: Session = Depends(get_db)):
 @router.post("/", response_model=User)
 def create_user(user: NewUser, db: Session = Depends(get_db)):
     try:
-        return user_repository.create_user(db, user)
+        return user_repository.create_user(db, user.name, user.password)
     except IntegrityError:
         raise HTTPException(
             status_code=HTTP_409_CONFLICT,
