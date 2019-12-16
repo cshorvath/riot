@@ -38,16 +38,14 @@ class MQTTClientWrapper:
         logging.info(f"{self} stop called")
         self._mqtt_client.disconnect()
 
-    def publish(self, topic: str, payload: str, qos=None, cb: Callable[[], None] = None):
-        if qos is None:
-            qos = self._qos
+    def publish(self, topic: str, payload: str, cb: Callable[[], None] = None):
         logging.debug(f"Publish message to topic[{topic}]")
-        msg_info = self._mqtt_client.publish(topic, payload, qos=qos)
+        msg_info = self._mqtt_client.publish(topic, payload, qos=self._qos)
         if cb:
             self._publish_callbacks[msg_info.mid] = cb
 
-    def publish_json(self, topic: str, payload: dict, qos: int = None, cb: Callable[[], None] = None):
-        self.publish(topic, json.dumps(payload), qos, cb)
+    def publish_json(self, topic: str, payload: dict, cb: Callable[[], None] = None):
+        self.publish(topic, json.dumps(payload), cb)
 
     def add_subscriber(self, subscriber: MQTTSubscriber):
         self._subscribers.add(subscriber)

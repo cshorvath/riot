@@ -32,7 +32,7 @@ operator_mapping: Dict[RuleOperator, RuleCondition] = {
     RuleOperator.NE:
         RuleCondition("{x} != {arg1}", lambda x, arg1, arg2: x != arg1),
     RuleOperator.BETWEEN:
-        RuleCondition("{arg1} <= {x} <= {arg2}", lambda x, arg1, arg2: float(x) <= arg1 and float(x) <= arg2),
+        RuleCondition("{arg1} <= {x} <= {arg2}", lambda x, arg1, arg2: arg1 <= float(x) <= arg2),
     RuleOperator.ANY:
         RuleCondition("Value present {x}", lambda x, arg1, arg2: bool(x))
 }

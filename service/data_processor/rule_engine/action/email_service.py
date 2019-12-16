@@ -48,7 +48,7 @@ class SMTPEmailService(AbstractEmailService):
         self._user = user
         self._password = password
         self._from = from_name, from_address
-        self._smtp_class: Type[smtplib.SMTP] = smtplib.SMTP_SSL if use_ssl else smtplib.SMTP_SSL
+        self._smtp_class: Type[smtplib.SMTP] = smtplib.SMTP_SSL if use_ssl else smtplib.SMTP
 
     def _send_mail(self, recipients: List[str], subject: str, body: str):
         try:
