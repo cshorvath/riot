@@ -20,17 +20,16 @@ const App = function ({loggedIn}) {
         <Header/>
         <Container className="mt-3">
             <Switch>
-                <Route exact path="/"><Redirect to="/device"/></Route>
                 <Route exact path="/device" component={authReq(Devices)}/>
                 <Route exact path="/device/:deviceId/message" component={authReq(Messages)}/>
                 <Route exact path="/device/:deviceId/rule" component={authReq(Rules)}/>
+                <Route path="*"><Redirect to="/device"/></Route>
             </Switch>
         </Container>
     </BrowserRouter>
 };
 
 function mapStateToProps(state) {
-    console.log(JSON.stringify(state));
     return {loggedIn: state.login.user};
 }
 

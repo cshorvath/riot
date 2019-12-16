@@ -72,7 +72,8 @@ function actionArgInputs(actionType, editedRule, devices) {
                     Céleszköz
                 </Form.Label>
                 <Col md="9">
-                    <Form.Control as="select" name="target_device_id">
+                    <Form.Control as="select" name="target_device_id"
+                                  defaultValue={editedRule.target_device ? editedRule.target_device.id : -1}>
                         {
                             devices.map(
                                 device => <option key={"target_device_" + device.id}
@@ -99,7 +100,7 @@ function RuleEditModal({deviceId, show, rule, devices, error, addRule, updateRul
         data => updateRule(deviceId, rule.id, data)
         : data => addRule(deviceId, data);
     const title = rule ? "Szabály szerkesztése" : "Szabály hozzáadása";
-    const errorComponent = error && <ErrorAlert error={error.message}/>
+    const errorComponent = error && <ErrorAlert error={error.message}/>;
     return <Modal
         show={show}
         onHide={hideRuleModal}

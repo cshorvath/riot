@@ -31,12 +31,12 @@ while True:
         payload=json.dumps({"timestamp": dt.timestamp() * 1000,
                             "payload": {
                                 "temperature": random.randint(20, 40),
-                                # "humidity": random.randint(50, 100)
+                                "humidity": random.randint(50, 100)
                             }
                             }),
         qos=2
     )
     c += 1
     dt += datetime.timedelta(minutes=1)
-    sleep(0.01)
+    sleep(0.1)
     client.loop(1, 100)
