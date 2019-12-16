@@ -16,6 +16,7 @@ uvicorn = "*"
 python-multipart = "*"
 passlib = {extras = ["bcrypt"],version = "*"}
 pyjwt = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"

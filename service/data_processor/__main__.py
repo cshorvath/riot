@@ -57,7 +57,6 @@ def main():
             mqtt_wrapper=mqtt_client,
             db_persister=db_persister,
             prefix=topic_prefix,
-            qos=qos
         )
 
         rule_engine = RuleEngine(db_persister)

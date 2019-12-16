@@ -23,9 +23,7 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/token"
-)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 
 
 def get_current_user(
@@ -49,9 +47,7 @@ def get_current_user(
     return user
 
 
-def admin_user(
-        user: User = Depends(get_current_user)
-):
+def admin_user(user: User = Depends(get_current_user)):
     if not user.admin:
         raise HTTPException(
             status_code=HTTP_403_FORBIDDEN,

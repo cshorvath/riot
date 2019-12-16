@@ -19,11 +19,10 @@ function handleSubmit(event, onSubmit) {
         action_type: data.get("action_type"),
         action_arg: data.get("action_arg"),
         operator: data.get("operator"),
-        operator_arg_1: data.get("operator_arg_1"),
-        operator_arg_2: data.get("operator_arg_2"),
-        target_device_id: data.get("target_device_id")
+        operator_arg_1: Number(data.get("operator_arg_1")),
+        operator_arg_2: Number(data.get("operator_arg_2")),
+        target_device_id: Number(data.get("target_device_id"))
     };
-    console.log(submittedRule);
     onSubmit(submittedRule)
 }
 
@@ -93,7 +92,6 @@ function RuleEditModal({deviceId, show, rule, devices, error, addRule, updateRul
     const [actionType, setActionType] = useState(RULE_ACTIONS.SEND_EMAIL);
     const [operator, setOperator] = useState(OPERATOR["LT"]);
     useEffect(() => {
-        console.log(rule);
         setActionType(rule ? rule.action_type : RULE_ACTIONS.SEND_EMAIL);
         setOperator(rule ? OPERATOR[rule.operator] : OPERATOR["LT"]);
     }, [rule]);

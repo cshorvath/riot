@@ -23,7 +23,7 @@ def get_authenticated_user(
     return None
 
 
-def create_access_token(*, data: dict, expires_delta: timedelta = None):
+def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -37,7 +37,7 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
 router = APIRouter()
 
 
-@router.post("/", response_model=Token)
+@router.post("", response_model=Token)
 async def login_for_access_token(
         user: api_model.User = Depends(get_authenticated_user)
 ):

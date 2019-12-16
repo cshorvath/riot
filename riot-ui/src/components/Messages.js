@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {withRouter} from "react-router";
 import {connect} from "react-redux";
-import {getMessages, messagesReset} from "../actions/messages";
+import {getMessages} from "../actions/messages";
 import Pagination from "react-bootstrap/Pagination";
 import {ErrorAlert, formatDeviceTitle, InProgressSpinner} from "./util/util";
 import Table from "react-bootstrap/Table";
@@ -120,4 +120,4 @@ function Messages({match, isLoading, device, items = [], pageCount, recordCount,
     </>
 }
 
-export default withRouter(connect(state => state.messages, {getMessages, messagesReset})(Messages));
+export default withRouter(connect(state => state.messages, {getMessages})(Messages));

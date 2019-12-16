@@ -1,9 +1,7 @@
-import {MESSAGES_ERROR, MESSAGES_LOADED, MESSAGES_LOADING, MESSAGES_RESET} from "../actions/messages";
+import {MESSAGES_ERROR, MESSAGES_LOADED, MESSAGES_LOADING} from "../actions/messages";
 
 export default function (state = {}, action) {
     switch (action.type) {
-        case MESSAGES_RESET:
-            return {};
         case MESSAGES_LOADING:
             return {...state, isLoading: true, error: null};
         case    MESSAGES_LOADED:

@@ -20,7 +20,7 @@ function loginError(error) {
     }
 }
 
-function loginInit(error) {
+function loginInit() {
     return {
         type: LOGIN_INIT,
     }

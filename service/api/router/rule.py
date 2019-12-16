@@ -7,7 +7,7 @@ from starlette.status import HTTP_404_NOT_FOUND
 import api.repository.rule as rule_repository
 from api.bootstrap import get_db
 from api.model.rule import RuleRequest, RuleResponse
-from api.util.auth import owner_user, get_current_user
+from api.util.auth import owner_user
 from api.util.validation import validate_rule
 from core.model import User
 
@@ -22,15 +22,7 @@ def get_rules_for_device(
     return rule_repository.get_rules_for_device(db, device_id)
 
 
-@router.get("/rule", response_model=List[RuleResponse])
-def get_rules_for_user(
-        user: User = Depends(get_current_user),
-        db: Session = Depends(get_db)
-):
-    return rule_repository.get_rules_for_user(db, user)
-
-
-@router.post("/device/{device_id}/rule")
+@router.post("/device/{device_id}/rule", response_model=RuleResponse)
 def add_rule_for_device(
         device_id: int,
         rule: RuleRequest,

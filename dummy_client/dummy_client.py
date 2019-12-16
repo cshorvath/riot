@@ -29,7 +29,11 @@ while True:
     msg_info = client.publish(
         topic=topic,
         payload=json.dumps({"timestamp": dt.timestamp() * 1000,
-                            "payload": {"temperature": random.randint(20, 40), "humidity": random.randint(50, 100)}}),
+                            "payload": {
+                                "temperature": random.randint(20, 40),
+                                # "humidity": random.randint(50, 100)
+                            }
+                            }),
         qos=2
     )
     c += 1

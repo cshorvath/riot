@@ -13,7 +13,7 @@ from core.model import User
 router = APIRouter()
 
 
-@router.get("/", response_model=List[dto.DeviceResponse])
+@router.get("", response_model=List[dto.DeviceResponse])
 def get_owned_devices(db: Session = Depends(get_db),
                       user: User = Depends(get_current_user)):
     devices_with_rule_count_and_last_msg = device_repository.get_devices_of_user(db, user)
@@ -22,7 +22,7 @@ def get_owned_devices(db: Session = Depends(get_db),
             devices_with_rule_count_and_last_msg]
 
 
-@router.post("/", response_model=dto.DeviceResponse)
+@router.post("", response_model=dto.DeviceResponse)
 def create_device(device: dto.Device,
                   user: User = Depends(get_current_user),
                   db: Session = Depends(get_db)):

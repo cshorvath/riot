@@ -1,6 +1,8 @@
 import {LOGIN_ERROR, LOGIN_INIT, LOGIN_REQUEST, LOGIN_SUCCESS, LOGOUT} from "../actions/login";
 
-export default function (state={}, action) {
+const initialState = {inProgress: false, error: null, user: null};
+
+export default function (state = {}, action) {
     switch (action.type) {
         case LOGIN_INIT:
             return {inProgress: false};

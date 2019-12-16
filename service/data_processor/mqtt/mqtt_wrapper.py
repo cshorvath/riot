@@ -71,7 +71,7 @@ class MQTTClientWrapper:
     def _on_publish(self, mid):
         try:
             logging.debug(f"Message[{mid}] published")
-            self._publish_callbacks[mid]()
+            self._publish_callbacks.pop(mid)()
         except KeyError:
             logging.error(f"Could not find callback for published message[{mid}]")
 

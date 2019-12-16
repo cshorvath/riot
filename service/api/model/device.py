@@ -13,9 +13,3 @@ class Device(CommonModel):
 class DeviceResponse(Device):
     id: int
     rule_count: Optional[int]
-    # last_message: datetime
-
-
-class PatchDevice(CommonModel):
-    name: Optional[constr(strip_whitespace=True, min_length=2, max_length=25)]
-    description: Optional[str]

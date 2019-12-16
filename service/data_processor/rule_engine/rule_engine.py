@@ -14,25 +14,25 @@ class RuleCondition:
         self._predicate = predicate
 
     def eval(self, x: Number, arg1: Number, arg2: Number) -> Tuple[bool, Optional[str]]:
-        result = self._predicate(x, arg1, arg2)
-        return result, self._message.format(x=x, arg1=arg1, arg2=arg2) if result else None
+        result = x is not None and self._predicate(x, arg1, arg2)
+        return result, self._message.format(x=x, arg1=arg1, arg2=arg2) if result else (False, None)
 
 
 operator_mapping: Dict[RuleOperator, RuleCondition] = {
     RuleOperator.LT:
-        RuleCondition("{x} < {arg1}", lambda x, arg1, arg2: x < arg1),
+        RuleCondition("{x} < {arg1}", lambda x, arg1, arg2: float(x) < arg1),
     RuleOperator.LTE:
-        RuleCondition("{x} <= {arg1}", lambda x, arg1, arg2: x <= arg1),
+        RuleCondition("{x} <= {arg1}", lambda x, arg1, arg2: float(x) <= arg1),
     RuleOperator.GT:
-        RuleCondition("{x} > {arg1}", lambda x, arg1, arg2: x > arg1),
+        RuleCondition("{x} > {arg1}", lambda x, arg1, arg2: float(x) > arg1),
     RuleOperator.GTE:
-        RuleCondition("{x} >= {arg1}", lambda x, arg1, arg2: x >= arg1),
+        RuleCondition("{x} >= {arg1}", lambda x, arg1, arg2: float(x) >= arg1),
     RuleOperator.EQ:
         RuleCondition("{x} == {arg1}", lambda x, arg1, arg2: x == arg1),
     RuleOperator.NE:
         RuleCondition("{x} != {arg1}", lambda x, arg1, arg2: x != arg1),
     RuleOperator.BETWEEN:
-        RuleCondition("{arg1} <= {x} <= {arg2}", lambda x, arg1, arg2: x <= arg1 and x <= arg2),
+        RuleCondition("{arg1} <= {x} <= {arg2}", lambda x, arg1, arg2: float(x) <= arg1 and float(x) <= arg2),
     RuleOperator.ANY:
         RuleCondition("Value present {x}", lambda x, arg1, arg2: bool(x))
 }
@@ -54,7 +54,7 @@ class RuleEngine(DeviceMessageListener):
                 continue
             try:
                 value = message.payload.get(rule.message_field, None)
-                result, rule_message = value is not None and condition.eval(
+                result, rule_message = condition.eval(
                     x=value,
                     arg1=rule.operator_arg_1,
                     arg2=rule.operator_arg_2
@@ -66,6 +66,8 @@ class RuleEngine(DeviceMessageListener):
                         continue
                     action_handler.run_action(message, rule, rule_message)
             except ActionException as ex:
+                logging.exception(ex)
+            except ValueError as ex:
                 logging.exception(ex)
 
     def register_action_handler(self, action_type: ActionType, handler: ActionHandler):

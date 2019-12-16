@@ -26,9 +26,10 @@ export default function Chart({items, recordKeys}) {
     timestamps[0] = "x";
     data.columns.push(timestamps);
     items.forEach((item, itemIdx) => {
-            recordKeys.forEach((key, keyIdx) => data.columns[keyIdx][itemIdx + 1] = item.payload[key]);
+            recordKeys.forEach((key, keyIdx) => data.columns[keyIdx][itemIdx + 1] = item.payload[key] || 0);
             data.columns[recordKeys.length][itemIdx + 1] = item.timestamp;
         }
     );
+    console.table(data);
     return <C3Chart data={data} axis={axis}/>
 }

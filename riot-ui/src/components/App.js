@@ -10,7 +10,6 @@ import Messages from "./Messages";
 import Rules from "./Rules";
 
 
-
 const App = function ({loggedIn}) {
 
     function authReq(Component) {
@@ -31,6 +30,7 @@ const App = function ({loggedIn}) {
 };
 
 function mapStateToProps(state) {
+    console.log(JSON.stringify(state));
     return {loggedIn: state.login.user};
 }
 

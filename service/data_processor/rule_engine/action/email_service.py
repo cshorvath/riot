@@ -3,7 +3,7 @@ import smtplib
 from abc import ABC, abstractmethod
 from email.mime.text import MIMEText
 from email.utils import formataddr
-from typing import List, Type
+from typing import List, Type, Mapping
 
 from core.model import Rule
 from data_processor.mqtt.data_observer import DeviceMessage
@@ -74,9 +74,7 @@ class SMTPEmailService(AbstractEmailService):
         return msg
 
 
-def email_service_factory(impl: str, config: dict) -> AbstractEmailService:
-    if impl == "dummy":
-        return DummyEmailService()
+def email_service_factory(impl: str, config: Mapping) -> AbstractEmailService:
     if impl == "smtp":
         return SMTPEmailService(
             config["host"],
@@ -87,3 +85,6 @@ def email_service_factory(impl: str, config: dict) -> AbstractEmailService:
             config["from_name"],
             config["use_ssl"]
         )
+    if impl != "dummy":
+        logging.warning(f"Unknow EmailService implementation: {impl}")
+        return DummyEmailService()

@@ -35,7 +35,7 @@ class APIClient {
     }
 
     async getDevices() {
-        return (await this.callAPI("GET", "/device/")).data
+        return (await this.callAPI("GET", "/device")).data
     }
 
 
@@ -44,7 +44,7 @@ class APIClient {
     }
 
     async addDevice(device) {
-        return this.callAPI("POST", "/device/", null, device);
+        return this.callAPI("POST", "/device", null, device);
     }
 
     static _formatMessage(response) {
