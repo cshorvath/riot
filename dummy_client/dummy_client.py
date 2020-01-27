@@ -22,7 +22,7 @@ topic = f"riot/device/{DEVICE_ID}/outgoing"
 limit = int(argv[1])
 
 mqtt_broker = os.getenv("MQTT_HOST", "localhost")
-client = mqtt.Client("DummyClient", clean_session=False)
+client = mqtt.Client()
 client.connect(mqtt_broker, 1883, 60)
 c = 0
 dt = datetime.datetime(2019, 11, 18, 10, 10, 00)
@@ -36,7 +36,7 @@ while True:
                                 "humidity": random.randint(50, 100)
                             }
                             }),
-        qos=2
+        qos=0
     )
     c += 1
     dt += datetime.timedelta(minutes=1)

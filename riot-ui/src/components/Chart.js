@@ -20,7 +20,7 @@ export default function Chart({items, recordKeys}) {
             ret[0] = key;
             return ret;
         }),
-
+        unload: true
     };
     const timestamps = new Array(items.length + 1);
     timestamps[0] = "x";
@@ -30,6 +30,5 @@ export default function Chart({items, recordKeys}) {
             data.columns[recordKeys.length][itemIdx + 1] = item.timestamp;
         }
     );
-    console.table(data);
-    return <C3Chart data={data} axis={axis}/>
+    return <C3Chart data={data} axis={axis} />
 }
