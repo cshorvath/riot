@@ -8,7 +8,7 @@ httptools==0.1.1 ; sys_platform != 'win32' and sys_platform != 'cygwin' and plat
 mysql-connector-python==8.0.18
 paho-mqtt==1.5.0
 passlib[bcrypt]==1.7.2
-protobuf==3.12.4
+protobuf==3.18.3
 pycparser==2.20
 pydantic==1.6.1
 pyjwt==1.7.1
